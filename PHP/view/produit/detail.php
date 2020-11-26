@@ -1,14 +1,21 @@
 <?php
-$immatHTML = htmlspecialchars($v->getImmatriculation());
-$marqueHTML = htmlspecialchars($v->getMarque());
-$couleurHTML = htmlspecialchars($v->getCouleur());
-$immatURL = rawurlencode($v->getImmatriculation());
-$marqueURL = rawurlencode($v->getMarque());
-$couleurURL = rawurlencode($v->getCouleur());
+$idProduitHTML = htmlspecialchars($v->get($idProduit));
+$nomHTML = htmlspecialchars($v->get($nom));
+$descriptionHTML = htmlspecialchars($v->get($description));
+$prixHTML = htmlspecialchars($v->get($prix));
+$idCouleurHTML = htmlspecialchars($v->get($idCouleur));
+$idCategorieHTML = htmlspecialchars($v->get($idCategorie));
+
+$idProduitURL = rawurlencode($v->get($idProduit));
+$nomURL = rawurlencode($v->get($nom));
+$descriptionURL = rawurlencode($v->get($description));
+$prixURL = rawurlencode($v->get($prix));
+$idCouleurURL = rawurlencode($v->get($idCouleur));
+$idCategorieURL = rawurlencode($v->get($idCategorie));
 echo <<< EOT
     <p> 
-        Voiture $immatHTML de marque $marqueHTML (Couleur $couleurHTML)  
-        <a href="?action=update&immatriculation=$immatURL&couleur=$couleurURL&marque=marqueURL">
+        Produit $nomHTML ($descriptionHTML) (ID : $idProduitHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)  
+        <a href="?action=update&idProduit=$idProduitURL&nom=$nomURL&description=$descriptionURL&idCouleur=$idCouleur&idCategorie=$idCategorie">
             Mettre à jour
         </a>
     </p>
