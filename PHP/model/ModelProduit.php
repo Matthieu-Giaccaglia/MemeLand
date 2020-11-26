@@ -9,6 +9,7 @@ class ModelProduit extends Model {
     private $description;
     private $idCategorie;
     private $idCouleur;
+    
     protected static $object = 'produit';
     protected static $primary = 'idProduit';
 
