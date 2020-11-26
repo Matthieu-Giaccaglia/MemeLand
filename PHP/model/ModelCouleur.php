@@ -24,6 +24,7 @@ class ModelCouleur extends Model {
         return false;
     }
 
+    //un constructeur
     public function __construct($idC, $nomC, $imageC) {
         if (!is_null($idC) && !is_null($nomC) && !is_null($imageC) {
             $this->idProduit = $idC;
