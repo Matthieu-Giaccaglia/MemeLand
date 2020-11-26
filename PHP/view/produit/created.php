@@ -1,4 +1,4 @@
 <?php
-echo "<p>La voiture a bien été créée</p>";
+echo "<p>Le produit a bien été créée</p>";
 require File::build_path(array('view',self::$object,'list.php'));
 ?>
