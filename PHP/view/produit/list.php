@@ -2,13 +2,13 @@
 echo "<h3>Liste des produits :</h3>";
 echo "<ul>";
 foreach ($tab_v as $v) {
-    $vTypeHTML = htmlspecialchars($v->getType());
-    $vTypeURL = rawurlencode($v->getType());
+    $vidProduitHTML = htmlspecialchars($v->getidProduit());
+    $vidProduitURL = rawurlencode($v->getidProduit());
     echo <<< EOT
         <li> 
-            Le produit de type $vTypeHTML
-            <a href="?action=read&type=$vTypeURL">(+ d'info)</a>
-            <a href="?action=delete&type=$vTypeHTML">(supprimer)</a>.
+            Le produit $vidProduitHTML de 
+            <a href="?action=read&idProduit=$vidProduitURL">(+ d'info)</a>
+            <a href="?action=delete&idProduit=$vidProduitHTML">(supprimer)</a>.
         </li>
 EOT;
 }
