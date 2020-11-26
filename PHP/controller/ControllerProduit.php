@@ -1,23 +1,23 @@
 <?php
 
-require_once File::build_path(array('model', 'ModelVoiture.php')); // chargement du modèle
+require_once File::build_path(array('model', 'Modelproduit.php')); // chargement du modèle
 
-class ControllerVoiture {
+class ControllerProduit {
 
-    protected static $object = 'voiture';
+    protected static $object = 'produit';
 
     public static function readAll() {
-        $tab_v = ModelVoiture::selectAll();     //appel au modèle pour gerer la BD
+        $tab_v = ModelProduit::selectAll();     //appel au modèle pour gerer la BD
         $view = "list";
-        $pagetitle = "Gestion des voitures";
+        $pagetitle = "Gestion des produits";
         require File::build_path(array("view", "view.php"));
     }
 
     public static function read() {
-        $pagetitle = "Gestion des voitures";
-        if (isset($_GET['immat'])) {
-            $immat = $_GET['immat'];
-            $v = ModelVoiture::select($immat);
+        $pagetitle = "Gestion des produits";
+        if (isset($_GET['idProduit'])) {
+            $immat = $_GET['idProduit'];
+            $v = ModelProduit::select($idProduit);
             if ($v === false) {
                 $view = "error";
             } else {
@@ -31,18 +31,20 @@ class ControllerVoiture {
 
     public static function create() {
         $view = "update";
-        $pagetitle = "Gestion des voitures";
-        $immatHTML = "";
-        $marqueHTML = "";
-        $couleurHTML = "";
+        $pagetitle = "Gestion des produits";
+        $idProduitHTML = "";
+        $nomHTML = "";
+        $idCouleurHTML = "";
+        $descriptionHTML = "";
+        $idCategorieHTML = "";
         $next_action = "created";
         $primary_property = "required";
         require File::build_path(array("view", "view.php"));
     }
 
     public static function created() {
-        $pagetitle = "Gestion des voitures";
-        if (isset($_GET['immatriculation']) && isset($_GET['marque']) && isset($_GET['couleur'])) {
+        $pagetitle = "Gestion des produits";
+        if (isset($_GET['idProduit']) && isset($_GET['nom']) && isset($_GET['description']) && isset($_GET['prix']) && isset($_GET['idCategorie']) && isset($_GET['idCouleur'])) {
             $v = new ModelVoiture($_GET['marque'], $_GET['couleur'], $_GET['immatriculation']);
             $save_succesful = $v->save();
             if ($save_succesful) {
