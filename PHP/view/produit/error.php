@@ -1,4 +1,4 @@
 <?php
 
-echo "<p> Problème avec la voiture. </p>";
+echo "<p> Problème avec le produit. </p>";
 ?>
