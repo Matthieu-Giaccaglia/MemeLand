@@ -1,5 +1,5 @@
 <?php
-	$bdd = new PDO('mysql:host=localhost;dbname=deneuvillew;charset=utf8', 'root', '');
+	$bdd = new PDO('mysql:host=localhost;dbname=deneuvillew;charset=utf8', 'deneuvillew', '');
 
 	   if(isset($_GET['deleted']) AND !empty($_GET['deleted'])) {
 	      $supprime = (int) $_GET['deleted'];
