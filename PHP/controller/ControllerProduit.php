@@ -16,8 +16,8 @@ class ControllerProduit {
     }
 
     public static function read() {
-        $v = ModelProduit::select($_GET["immat"]);
-        if ($v == false){
+        $p = ModelProduit::select($_GET["immat"]);
+        if ($p == false){
             $controller = 'produit';
             $view = 'errorProduit';
             $pagetitle = 'Erreur';

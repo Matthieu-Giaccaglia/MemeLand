@@ -7,6 +7,7 @@ class ModelUtilisateur extends Model {
     private $prenom;
     private $nonce;
     private $email;
+    private $admin;
     
     protected static $object = 'utilisateur';
     protected static $primary = 'login';
@@ -34,6 +35,7 @@ class ModelUtilisateur extends Model {
             $this->prenom = $data['prenom'];
             $this->nonce = $nonce;
             $this->email = $data['email'];
+            $this->admin = $data['admin'];
         }
     }
 }
