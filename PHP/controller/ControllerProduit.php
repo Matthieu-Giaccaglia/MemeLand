@@ -7,55 +7,68 @@ class ControllerProduit {
     protected static $object = 'produit';
 
     public static function readAll() {
-        $tab_v = ModelProduit::selectAll();     //appel au modèle pour gerer la BD
+        $tab_p = ModelProduit::selectAll();     //appel au modèle pour gerer la BD
+
+        $controller = 'produit';
         $view = "list";
         $pagetitle = "Gestion des produits";
         require File::build_path(array("view", "view.php"));
     }
 
     public static function read() {
-        $pagetitle = "Gestion des produits";
-        if (isset($_GET['idProduit'])) {
-            $immat = $_GET['idProduit'];
-            $v = ModelProduit::select($idProduit);
-            if ($v === false) {
-                $view = "error";
-            } else {
-                $view = "detail";
-            }
+        $v = ModelProduit::select($_GET["immat"]);
+        if ($v == false){
+            $controller = 'produit';
+            $view = 'errorProduit';
+            $pagetitle = 'Erreur';
+        
+            require File::build_path(array("view","view.php"));
         } else {
-            $view = "error";
+            $controller = 'produit';
+            $view = 'detail';
+            $pagetitle = 'Détails du produit';
+        
+            require File::build_path(array("view","view.php"));
         }
-        require File::build_path(array("view", "view.php"));
     }
 
     public static function create() {
-        $view = "update";
-        $pagetitle = "Gestion des produits";
-        $idProduitHTML = "";
-        $nomHTML = "";
-        $idCouleurHTML = "";
-        $descriptionHTML = "";
-        $idCategorieHTML = "";
-        $next_action = "created";
-        $primary_property = "required";
-        require File::build_path(array("view", "view.php"));
+        $controller = 'produit';
+        $view = 'update';
+        $pagetitle = 'Créer un produit';
+        
+        $produit = new ModelProduit(array(
+            'idProduit' => "",
+            'nom' => "",
+            'description' => "",
+            'prix' => "",
+            'idCategorie' => ""
+        ));
+        
+        $action = "created";
+        $readOrReq = "required";
+        
+        require File::build_path(array("view","view.php"));
     }
 
     public static function created() {
         $pagetitle = "Gestion des produits";
-        if (isset($_GET['idProduit']) && isset($_GET['nom']) && isset($_GET['description']) && isset($_GET['prix']) && isset($_GET['idCategorie']) && isset($_GET['idCouleur'])) {
-            $v = new ModelVoiture($_GET['marque'], $_GET['couleur'], $_GET['immatriculation']);
-            $save_succesful = $v->save();
-            if ($save_succesful) {
-                $tab_v = ModelVoiture::selectAll();
-                $view = "created";
-            } else {
-                $view = "error";
-            }
+        
+            
+         $save_succesful = ModelProduit::save(array(
+            'idProduit' => $_GET['idProduit'],
+            'nom' => $_GET['nom'],
+            'description' => $_GET['description'],
+            'prix' => $_GET['prix'],
+            'idCategorie' => $_GET['idCategorie'],
+        ));
+        if ($save_succesful) {
+            $tab_v = ModelProduit::selectAll();
+            $view = "created";
         } else {
             $view = "error";
         }
+        
         require File::build_path(array("view", "view.php"));
     }
 
@@ -67,59 +80,67 @@ class ControllerProduit {
 
     public static function delete() {
         $view = "deleted";
-        $pagetitle = "Gestion des voitures";
+        $pagetitle = "Gestion des produits";
 
-        if (isset($_GET['immat'])) {
-            $immat = $_GET['immat'];
-            $delete_successful = ModelVoiture::delete($_GET['immat']);
-            $tab_v = ModelVoiture::selectAll();
-            if ($delete_successful) {
-                $view = "deleted";
-            } else {
-                $view = "error";
-            }
-        } else {
+        
+        $immat = $_GET['idProduit'];
+        $delete_successful = ModelProduit::delete($_GET['idProduit']);
+        
+        if ($delete_successful) {
+            $tab_p = ModelProduit::selectAll();
+
+            $controller = self::$object;
+            $view = "deleted";
+            $pagetitle = "Produit supprimée";
+         } else {
+            $controller = self::$object;
             $view = "error";
         }
+        
         require File::build_path(array("view", "view.php"));
     }
 
     public static function update() {
-        $view = "update";
-        $pagetitle = "Gestion des voitures";
-        if (isset($_GET['immatriculation']) && isset($_GET['marque']) && isset($_GET['couleur'])) {
-            $immatHTML = htmlspecialchars($_GET['immatriculation']);
-            $marqueHTML = htmlspecialchars($_GET['marque']);
-            $couleurHTML = htmlspecialchars($_GET['couleur']);
-            $next_action = "updated";
-            $primary_property = "readonly";
+        $voitureUpdate = $_GET["idProduit"];
+        $voiture = ModelProduit::select($voitureUpdate);
+        
+        if ($voiture) {
+            $controller = 'produit';
             $view = 'update';
+            $pagetitle = 'Modifier un produit';
+            
+            $action = "updated";
+            $readOrReq = "readonly";
+        
+            require File::build_path(array("view","view.php"));
         } else {
-            $view = "error";
+            $controller = 'produit';
+            $view = 'errorDelete';
+            $pagetitle = 'Erreur de suppression';
+
+            require File::build_path(array("view","view.php"));
+            die();
         }
-        require File::build_path(array("view", "view.php"));
     }
 
     public static function updated() {
-        $pagetitle = "Gestion des voitures";
-        if (isset($_GET['immatriculation']) && isset($_GET['marque']) && isset($_GET['couleur'])) {
-            $data = array(
-                "marque" => $_GET['marque'],
-                "couleur" => $_GET['couleur'],
-                "immatriculation" => $_GET['immatriculation']
-            );
-            $immat = $_GET['immatriculation'];
-            $update_successful = ModelVoiture::update($data);
-            if ($update_successful) {
-                $tab_v = ModelVoiture::selectAll();
-                $view = "updated";
-            } else {
-                $view = "error";
-            }
-        } else {
-            $view = "error";
-        }
-        require File::build_path(array("view", "view.php"));
+        require_once File::build_path(array("model","ModelProduit.php"));
+        
+        ModelProduit::save(array(
+            'idProduit' => $_GET['idProduit'],
+            'nom' => $_GET['nom'],
+            'description' => $_GET['description'],
+            'prix' => $_GET['prix'],
+            'idCategorie' => $_GET['idCategorie']
+        ));
+        
+        $tab_v = ModelProduit::selectAll(); 
+        
+        $controller = 'produit';
+        $view = 'updated';
+        $pagetitle = 'Modification Effectuée';
+        
+        require File::build_path(array("view","view.php"));
     }
 
 }

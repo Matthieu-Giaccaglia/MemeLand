@@ -124,7 +124,7 @@ public static function selectAll() {
         }
     }
 
-    public function save() {
+    public static function save($data) {
         try {
             $table_name = static::$object;
             

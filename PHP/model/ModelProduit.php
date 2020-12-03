@@ -8,7 +8,6 @@ class ModelProduit extends Model {
     private $nom;
     private $description;
     private $idCategorie;
-    private $idCouleur;
     private $prix;
     
     protected static $object = 'produit';
@@ -29,15 +28,13 @@ class ModelProduit extends Model {
     }
 
     // un constructeur
-    public function __construct($idP, $nomP, $descriptionP, $idCategorieP, $idCouleurP, $prixP) {
-        if (!is_null($idP) && !is_null($nomP) && !is_null($descriptionP) && !is_null($idCategorieP) &&
-        !is_null($idCouleurP) && !is_null($prixP)) {
-            $this->idProduit = $idP;
-            $this->nom = $nomP;
-            $this->description = $descriptionP;
-            $this->idCategorie = $idCategorieP;
-            $this->idCouleur = $idCouleurP;
-            $this->prix = $prixP;
+    public function __construct($data = array()) {
+        if (!empty($data)) {
+            $this->idProduit = $data['idProduit'];
+            $this->nom = $data['nom'];
+            $this->description = $data['description'];
+            $this->idCategorie = $data['idCategorie'];
+            $this->prix = $data['prix'];
         }
     }
 }
