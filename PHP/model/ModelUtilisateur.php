@@ -26,13 +26,15 @@ class ModelUtilisateur extends Model {
     }
 
     // un constructeur
-    public function __construct($login, $nom, $prenom, $email) {
-        if (!is_null($email)) $nonce = NULL;
-        if (!is_null($login) && !is_null($nom) && !is_null($prenom) && is_null($nonce) && !is_null($email))         {
-            $this->login = $login;
-            $this->nom = $nom;
-            $this->prenom = $prenom;
+    public function __construct($data = array()) {
+        if (!is_null($data['email'])) $nonce = NULL;
+        if (!empty($data)) {
+            $this->login = $data['login'];
+            $this->nom = $data['nom'];
+            $this->prenom = $data['prenom'];
             $this->nonce = $nonce;
-            $this->email = $email;
+            $this->email = $data['email'];
         }
     }
+}
+

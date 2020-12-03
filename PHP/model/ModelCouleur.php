@@ -25,11 +25,11 @@ class ModelCouleur extends Model {
     }
 
     //un constructeur
-    public function __construct($idC, $nomC, $imageC) {
-        if (!is_null($idC) && !is_null($nomC) && !is_null($imageC) {
-            $this->idProduit = $idC;
-            $this->nom = $nomC;
-            $this->description = $imageC; 
+    public function __construct($data = array()) {
+        if (!empty($data)) {
+            $this->idProduit = $data['id_produit'];
+            $this->nom = $data['nom'];
+            $this->description = $data['description']; 
         }
     }
 }
