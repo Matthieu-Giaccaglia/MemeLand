@@ -9,6 +9,8 @@ class ModelProduit extends Model {
     private $description;
     private $idCategorie;
     private $prix;
+    private $image;
+    private $couleur;
     
     protected static $object = 'produit';
     protected static $primary = 'idProduit';
@@ -35,6 +37,8 @@ class ModelProduit extends Model {
             $this->description = $data['description'];
             $this->idCategorie = $data['idCategorie'];
             $this->prix = $data['prix'];
+            $this->image = $data['image'];
+            $this->couleur = $data['couleur'];
         }
     }
 }
