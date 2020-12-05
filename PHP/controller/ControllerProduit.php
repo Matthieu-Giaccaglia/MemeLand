@@ -1,6 +1,6 @@
 <?php
 
-require_once File::build_path(array('model', 'Modelproduit.php')); // chargement du modèle
+require_once File::build_path(array('model', 'ModelProduit.php')); // chargement du modèle
 
 class ControllerProduit {
 
@@ -11,7 +11,7 @@ class ControllerProduit {
 
         $controller = 'produit';
         $view = "list";
-        $pagetitle = "Gestion des produits";
+        $pagetitle = "Tous les produits";
         require File::build_path(array("view", "view.php"));
     }
 
@@ -38,11 +38,13 @@ class ControllerProduit {
         $pagetitle = 'Créer un produit';
         
         $produit = new ModelProduit(array(
-            'idProduit' => "",
+            'produit_id' => "",
             'nom' => "",
             'description' => "",
             'prix' => "",
-            'idCategorie' => ""
+            'categorie_id' => "",
+            'couleur' => "",
+            'image' => ""
         ));
         
         $action = "created";

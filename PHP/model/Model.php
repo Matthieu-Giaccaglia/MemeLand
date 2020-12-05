@@ -28,7 +28,8 @@ class Model {
 public static function selectAll() {
         try {
             $pdo = self::$pdo;
-            $table_name = static::$object;
+            $table_name = "p_" . static::$object;
+            echo $table_name;
             $class_name = 'Model' . ucfirst(static::$object);
             $sql = "SELECT * from $table_name";
             $rep = $pdo->query($sql);

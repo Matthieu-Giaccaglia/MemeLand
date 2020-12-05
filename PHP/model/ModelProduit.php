@@ -4,10 +4,10 @@ require_once File::build_path(array("model", "Model.php"));
 
 class ModelProduit extends Model {
 
-    private $idProduit;
+    private $id_produit;
     private $nom;
     private $description;
-    private $idCategorie;
+    private $categorie_id;
     private $prix;
     private $image;
     private $couleur;
@@ -32,10 +32,10 @@ class ModelProduit extends Model {
     // un constructeur
     public function __construct($data = array()) {
         if (!empty($data)) {
-            $this->idProduit = $data['idProduit'];
+            $this->id_produit = $data['id_produit'];
             $this->nom = $data['nom'];
             $this->description = $data['description'];
-            $this->idCategorie = $data['idCategorie'];
+            $this->categorie_id = $data['categorie_id'];
             $this->prix = $data['prix'];
             $this->image = $data['image'];
             $this->couleur = $data['couleur'];

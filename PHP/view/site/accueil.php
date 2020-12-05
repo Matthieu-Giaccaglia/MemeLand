@@ -1,35 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="../CSS/Back.css">
-        <meta charset="UTF-8"> 
-        <title>
-            Pepe
-        </title>
-    </head>
-    <body>
-        <header>
-            <p id="gang1">
-                <img src="../IMAGES/MemeLand.png" alt="Logo" height="312" width="260">
-                <h1>Bienvenue !</h1> 
-            </p>
-        </header>
-
-        <nav>
-            <div class="dropdown">
-              <button class="dropbtn">
-                <img src="../IMAGES/MemeLand.png" alt="Logo"  height="156" width="130">
-                <img id="logoOver" src="../IMAGES/Pepe_eyesspace.png" alt="Logo"  height="156" width="130">
-              </button>
-              <div class="dropdown-content">
-                <a href="./index.html">Acceuil</a>
-                <a href="./services.html">Services</a>
-                <a href="./equipe.html">L'Equipe</a>
-              </div>
-            </div>
-        </nav>
-
-        <section>
+<section>
             <br/>
             <p>
                 Bienvenue à notre site qui vend des objets retouchés par vous sur le net, oui c'est ce que nous faisons. Nous vendons des mugs, T-shirts et pulls retouchés avec notre logo dessus.<br/> <b>Edition limité</b> alors dépechez vous ! 
@@ -113,10 +82,3 @@
         		si vous le souhaitez, meme proposez votre modèle !
         	</p>
         </section>
-
-        <footer>
-            copyright moi 2019
-            <a href="#gang1"><img src="../IMAGES/up.png" id= "up" alt="debut"></a>
-        </footer> 
-    </body>
-</html>

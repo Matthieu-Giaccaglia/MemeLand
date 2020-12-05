@@ -1,20 +1,20 @@
 @font-face {
   font-family: 'hard';
-  src:  url(./Hardcore.otf); 
+  src:  url(../fonts/hardcore.otf); 
   font-weight : bold;
 }
 
 @font-face {
     font-family : 'nom';
-    src: url(./nom.otf); 
+    src: url(../fonts/nom.otf); 
 }
 
 @font-face {
     font-family : 'texte';
-    src : url(./texte.otf);
+    src : url(../fonts/texte.otf);
 }
 body{
-	background-image:url(../IMAGES/background.jpg);
+	background-image:url(../images/background.jpg);
 	background-attachment: fixed;
   background-size: cover;
   font-family:  texte, arial;

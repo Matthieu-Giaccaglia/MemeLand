@@ -1,39 +1,9 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <link rel="stylesheet" type="text/css" href="../CSS/Back.css">
-        <meta charset="UTF-8"> 
-        <title>
-            Kek
-        </title>
-    </head>
-    <body>
-        <header>
-            <p id="gang1">
-                <img src="../IMAGES/MemeLand.png" alt="Logo" height="312" width="260"> 
-            </p>
-        </header>
-
-        <nav>
-            <div class="dropdown">
-              <button class="dropbtn">
-                <img src="../IMAGES/MemeLand.png" alt="Logo"  height="156" width="130">
-                <img id="logoOver" src="../IMAGES/Pepe_eyesspace.png" alt="Logo"  height="156" width="130">
-              </button>
-              <div class="dropdown-content">
-                <a href="./index.html">Acceuil</a>
-                <a href="./services.html">Services</a>
-                <a href="./equipe.html">L'Equipe</a>
-              </div>
-            </div>
-        </nav>
-        
-      <main id="Equipe">
+<main id="Equipe">
       <article class="seul">
         <h2>Directeur des Ressources Hummaines</h2>
         <p class="jtexte">
           <strong>Regam Reda </strong> 
-          <img src="../IMAGES/reda.jpg" alt="Réda" class="perso"> 
+          <img src="./public/images/reda.jpg" alt="Réda" class="perso"> 
           Né le 06 Septembre 1999 à Saint-Paul.<br>
           Diplômé d'un : Master en management Master en ressources humaines<br>
           Employé depuis 5 ans
@@ -46,7 +16,7 @@
         <h2>Directeur artistique</h2>
         <p class="jtexte"> 
           <strong>Walter deneuville </strong> 
-          <img src="../IMAGES/walter.jpg" alt="Walter" class="perso">
+          <img src="./public/images/walter.jpg" alt="Walter" class="perso">
           Née le 07 Décembre 2000 à Paris.<br> 
           Diplômée d'un diplôme Supérieur d'Arts Appliqué des Beaux Arts.<br>
           Gère notre identité artistique et les itinéraires des voyage<br>
@@ -58,17 +28,11 @@
         <h2>Directeur Marketing et Gestion Service</h2>
         <p class="jtexte"> 
           <strong>Khalil meziane </strong>
-          <img src="../IMAGES/khalil.png" alt="Khalil" class="perso">
+          <img src="./public/images/khalil.png" alt="Khalil" class="perso">
           Née le 24 Décembre 2000 à Montpellier <br>
           Diplômée d'un DUT Technique de Commercialisation  ( Montpellier - Sète )<br>
           Gère notre visibilité publicitaire et le gestion financière des voyages.<br>
           Aime Dormir et squatter l'appartement des autres.<br>
         </p>
       </article>
-    </main>
-
-    <footer>
-      <a href="./equipe.html" > <img src="../IMAGES/up.png" id= "up" alt="debut"></a>
-    </footer>    
-</body>
-</html>
+</main>
