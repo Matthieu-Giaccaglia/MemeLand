@@ -4,7 +4,13 @@
         <meta charset="UTF-8">
         <link rel="stylesheet" type="text/css" href="./public/styles/Back.css">
         <title><?php echo $pagetitle; ?></title>
-    
+    </head>
+    <body>
+        <header>
+          <p id="top">
+            <img src="./public/images/MemeLand.png" alt="Logo" height="312" width="260">
+          </p>
+        </header>
         <nav>
             <div class="dropdown">
               <button class="dropbtn">
@@ -19,8 +25,6 @@
               </div>
             </div>
         </nav>
-    </head>
-    <body>
 
         <?php
 
@@ -28,15 +32,8 @@
             require $filepath;
         ?>
 
-    </body>
-    
-    <header>
         <footer>
-          <a href="#gang1"><img src="./public/images/up.png" id= "up" alt="debut"></a>
-        </footer>    
-        <p style="border: 1px solid black;text-align:right;padding-right:1em;">
-        Site de vente
-        </p>
-    </header>
-
+          <a href="#top"><img src="./public/images/up.png" id= "up" alt="debut"></a>
+        </footer>   
+    </body>
 </html>

@@ -11,6 +11,12 @@
           </div>
 </aside>
 
+<article>
+  <a href="?controller=user&action=readAll">
+    <img src="./public/images/cart.png" alt="cart"/>
+  </a>
+</article>
+
 <?php
 echo "<h3>Liste des produits :</h3>";
 foreach ($tab_p as $p) {
