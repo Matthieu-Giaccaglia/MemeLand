@@ -1,21 +1,22 @@
 <?php
-$idProduitHTML = htmlspecialchars($v->get($idProduit));
-$nomHTML = htmlspecialchars($v->get($nom));
-$descriptionHTML = htmlspecialchars($v->get($description));
-$prixHTML = htmlspecialchars($v->get($prix));
-$idCouleurHTML = htmlspecialchars($v->get($idCouleur));
-$idCategorieHTML = htmlspecialchars($v->get($idCategorie));
+$nomHTML = htmlspecialchars($p->get("nom"));
+$descriptionHTML = htmlspecialchars($p->get("description"));
+$prixHTML = htmlspecialchars($p->get("prix"));
+$idCouleurHTML = htmlspecialchars($p->get("couleur"));
+$idCategorieHTML = htmlspecialchars($p->get("categorie_id"));
+$imageHTML = htmlspecialchars($p->get("image"));
 
-$idProduitURL = rawurlencode($v->get($idProduit));
-$nomURL = rawurlencode($v->get($nom));
-$descriptionURL = rawurlencode($v->get($description));
-$prixURL = rawurlencode($v->get($prix));
-$idCouleurURL = rawurlencode($v->get($idCouleur));
-$idCategorieURL = rawurlencode($v->get($idCategorie));
+$idProduitURL = rawurlencode($p->get("id_produit"));
+$nomURL = rawurlencode($p->get("nom"));
+$descriptionURL = rawurlencode($p->get("description"));
+$prixURL = rawurlencode($p->get("prix"));
+$idCouleurURL = rawurlencode($p->get("couleur"));
+$idCategorieURL = rawurlencode($p->get("categorie_id"));
 echo <<< EOT
     <p> 
-        Produit $nomHTML ($descriptionHTML) (ID : $idProduitHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)  
-        <a href="?action=update&idProduit=$idProduitURL&nom=$nomURL&description=$descriptionURL&idCouleur=$idCouleur&idCategorie=$idCategorie">
+        <b>Produit $nomHTML ($descriptionHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)</b>  
+        <img src="./public/images/produit/$imageHTML" alt="Walter" class="perso">
+        <a href="?action=update&idProduit=$idProduitURL">
             Mettre à jour
         </a>
     </p>

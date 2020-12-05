@@ -13,20 +13,17 @@
 
 <?php
 echo "<h3>Liste des produits :</h3>";
-echo "<ul>";
 foreach ($tab_p as $p) {
     
-    $vidProduitHTML = htmlspecialchars($p->get("id_produit"));
+    
     $vidProduitURL = rawurlencode($p->get("id_produit"));
     $image = $p->get("image");
     
     echo <<< EOT
         <li> 
-            Produit $vidProduitHTML
-            <img src="./public/images/produit/$image" alt="Walter" class="perso">
-            <a href="?controller=produit&action=read&id_produit=$vidProduitURL">(+ d'info)</a>
-            <a href="?controller=produit&action=delete&id_produit=$vidProduitHTML">(supprimer)</a>.
+            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="Walter" class="perso"></a>
         </li>
 EOT;
 }
+echo "</ul>";
 ?>

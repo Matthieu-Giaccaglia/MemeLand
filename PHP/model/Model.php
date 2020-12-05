@@ -47,7 +47,7 @@ public static function selectAll() {
 
     public static function select($primary) {
         try {
-            $table_name = static::$object;
+            $table_name = "p_" . static::$object;
             $class_name = 'Model' . ucfirst(static::$object);
             $primary_key = static::$primary;
             $sql = "SELECT * from $table_name WHERE $primary_key=:primary";

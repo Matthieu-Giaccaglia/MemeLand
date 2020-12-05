@@ -1,4 +1,4 @@
-<section>
+        <section>
             <br/>
             <p>
                 Bienvenue à notre site qui vend des objets retouchés par vous sur le net, oui c'est ce que nous faisons. Nous vendons des mugs, T-shirts et pulls retouchés avec notre logo dessus.<br/> <b>Edition limité</b> alors dépechez vous ! 

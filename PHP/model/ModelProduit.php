@@ -13,7 +13,7 @@ class ModelProduit extends Model {
     private $couleur;
     
     protected static $object = 'produit';
-    protected static $primary = 'idProduit';
+    protected static $primary = 'id_produit';
 
     // Getter générique
     public function get($nom_attribut) {
