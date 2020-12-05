@@ -9,17 +9,17 @@ class ControllerUtilisateur{
         $view = "panier";
         $pagetitle = "Panier";
 
-        $tab_panier = unserialize($_COOKIE["TestCookie"]);
+        $tab_panier = $_SESSION['panier'];
 
         require File::build_path(array("view","view.php"));
     }
 
     public static function ajoutPanier() {
         
-        $tab_panier = unserialize($_COOKIE["TestCookie"]);
+        $tab_panier = $_SESSION['panier'];
         $id_produit = $_GET["id_produit"];
         array_push($tab_panier, $id_produit);
-        setcookie("TestCookie", serialize($tab_panier), 120);
+        $_SESSION['panier'] = $tab_panier;
 
         $controller = self::$object;
         $view = "ajoutPanier";
