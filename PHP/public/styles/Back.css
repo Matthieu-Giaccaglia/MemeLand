@@ -212,6 +212,17 @@ label{
 .skill { 
 	color:red; 
 }
+.navBuy{
+  display: flex;
+  z-index: 3;
+  position: fixed;
+  height: 10%;
+  top: 2px;
+  right: 3px;
+  background-color:lightgreen;
+  padding: 13.8px;
+  border: inset rgb(137, 8, 237) 3px;
+}
 .perso {
     width: 50%;
     margin-top: 4%;

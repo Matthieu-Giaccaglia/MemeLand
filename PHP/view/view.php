@@ -11,6 +11,13 @@
             <img src="./public/images/MemeLand.png" alt="Logo" height="312" width="260">
           </p>
         </header>
+
+        <article>
+          <a href="?controller=utilisateur&action=panier">
+            <img class="navBuy" src="./public/images/cart.png" alt="cart" size="40%"/>
+          </a>
+        </article>
+
         <nav>
             <div class="dropdown">
               <button class="dropbtn">

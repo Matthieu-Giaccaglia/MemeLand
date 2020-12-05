@@ -11,14 +11,9 @@
           </div>
 </aside>
 
-<article>
-  <a href="?controller=user&action=readAll">
-    <img src="./public/images/cart.png" alt="cart"/>
-  </a>
-</article>
-
 <?php
-echo "<h3>Liste des produits :</h3>";
+echo "<section><h3>Liste des produits :</h3>";
+echo "<main><ul>";
 foreach ($tab_p as $p) {
     
     
@@ -27,9 +22,10 @@ foreach ($tab_p as $p) {
     
     echo <<< EOT
         <li> 
-            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="Walter" class="perso"></a>
+            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image"></a>
         </li>
 EOT;
 }
 echo "</ul>";
+echo "</ul></main></section>";
 ?>

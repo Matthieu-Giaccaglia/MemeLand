@@ -2,6 +2,7 @@
 
 require_once File::build_path(array("controller", "ControllerProduit.php"));
 require_once File::build_path(array("controller", "ControllerSite.php"));
+require_once File::build_path(array("controller", "ControllerUtilisateur.php"));
 // On recupère l'action passée dans l'URL
 $controller = 'site';
 
