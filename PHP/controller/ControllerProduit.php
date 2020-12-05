@@ -103,11 +103,12 @@ class ControllerProduit {
     }
 
     public static function update() {
-        $voitureUpdate = $_GET["idProduit"];
-        $voiture = ModelProduit::select($voitureUpdate);
+        $produitUpdate = $_GET["id_produit"];
+        echo $produitUpdate;
+        $produit = ModelProduit::select($produitUpdate);
         
-        if ($voiture) {
-            $controller = 'produit';
+        if ($produit) {
+            $controller = self::$object;
             $view = 'update';
             $pagetitle = 'Modifier un produit';
             
@@ -128,15 +129,17 @@ class ControllerProduit {
     public static function updated() {
         require_once File::build_path(array("model","ModelProduit.php"));
         
-        ModelProduit::save(array(
-            'idProduit' => $_GET['idProduit'],
+        ModelProduit::update(array(
+            'id_produit' => $_GET["id_produit"],
             'nom' => $_GET['nom'],
             'description' => $_GET['description'],
             'prix' => $_GET['prix'],
-            'idCategorie' => $_GET['idCategorie']
+            'categorie_id' => $_GET['categorie_id'],
+            'image' => $_GET['image'],
+            'couleur' => $_GET['couleur']
         ));
         
-        $tab_v = ModelProduit::selectAll(); 
+        $p = ModelProduit::select($_GET["id_produit"]); 
         
         $controller = 'produit';
         $view = 'updated';

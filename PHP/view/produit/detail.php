@@ -16,7 +16,7 @@ echo <<< EOT
     <p> 
         <b>Produit $nomHTML ($descriptionHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)</b>  
         <img src="./public/images/produit/$imageHTML" alt="Walter" class="perso">
-        <a href="?action=update&idProduit=$idProduitURL">
+        <a href="?controller=produit&action=update&id_produit=$idProduitURL">
             Mettre à jour
         </a>
     </p>

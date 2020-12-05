@@ -102,14 +102,17 @@ public static function selectAll() {
 
     public static function update($data) {
         try {
-            $table_name = static::$object;
+            $table_name = "p_" . static::$object;
             $primary_key = static::$primary;
+
             $set_parts = array();
             foreach ($data as $key => $value) {
-                $set_parts[] = "$key=:$key";
+                $set_parts[] = "$key='" . str_replace( "'", "\'", $value ) . "'";
             }
+
             $set_string = join(',', $set_parts);
-            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key=:$primary_key";
+            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key=$data[$primary_key]";
+            
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
 
@@ -127,40 +130,37 @@ public static function selectAll() {
 
     public static function save($data) {
         try {
-            $table_name = static::$object;
+
+            $table_name = "p_" . static::$object;
+
+            $table = '';
+            $value = '';
+
+            foreach ($data as $cle => $valeur){
             
-            // ReflectionClass ou écrire les attributs en dur
-            $reflect = new ReflectionClass($this);
-            $props = $reflect->getProperties(ReflectionProperty::IS_PRIVATE);
-            
-            $attributes = array();
-            $data = array();
-            
-            foreach ($props as $prop) {
-                $attributes[] = $prop->getName();
-                $data[$prop->getName()] = $this->get($prop->getName());
+                $table = $table . "{$cle}, ";
+                $value = $value . " '" . str_replace( "'", "\'", $valeur ) . "', ";
             }
-            $into_string = '(' . join(',',$attributes) . ')';
-            
-            // Rajoute ":" avant les attributs
-            function my_prepend($s) { 
-                return ":" . $s;                
-            }
-            $values_string = '(' . join(',', array_map("my_prepend",$attributes)) . ')';            
-            
-            $sql = "INSERT INTO $table_name $into_string VALUES $values_string";
-            
+        
+            $table = "(" . rtrim($table,",") . ")";
+            $value = "(" . rtrim($value,",") . ")";
+
+            $sql = "INSERT INTO {$table_name} {$table} VALUES {$value}";
+            echo $sql;
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
-            
-            // On donne les valeurs et on exécute la requête	 
-            return $req_prep->execute($data);
+
+            $values = array(
+            );
+            // On donne les valeurs et on exécute la requête
+            return $req_prep->execute();
+           
         } catch (PDOException $e) {
-            if (Conf::getDebug()) {
-                if ($e->errorInfo[1] == 1062) {
-                    // Duplicate entry
-                    return false;
-                }
+            
+            if ($e->errorInfo[1]==1062){
+                return false;
+            }else if (Conf::getDebug()) {
+                var_dump($e);
                 echo $e->getMessage(); // affiche un message d'erreur
             } else {
                 echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
