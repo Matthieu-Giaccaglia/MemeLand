@@ -22,7 +22,7 @@ foreach ($tab_p as $p) {
     
     echo <<< EOT
         <li> 
-            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image"></a>
+            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image" class="perso"></a>
         </li>
 EOT;
 }
