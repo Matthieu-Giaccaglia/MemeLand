@@ -1,5 +1,5 @@
 <?php
-$tab_panier = ["1","2"];
+
 echo "<section><h3>Liste des produits Util :</h3>";
 echo "<main><ul>";
 foreach ($tab_panier as $prod_p) {

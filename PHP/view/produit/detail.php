@@ -12,6 +12,7 @@ $descriptionURL = rawurlencode($p->get("description"));
 $prixURL = rawurlencode($p->get("prix"));
 $idCouleurURL = rawurlencode($p->get("couleur"));
 $idCategorieURL = rawurlencode($p->get("categorie_id"));
+
 echo <<< EOT
     <section>
         <p> 
@@ -20,7 +21,19 @@ echo <<< EOT
             <a href="?controller=produit&action=update&id_produit=$idProduitURL">
                 Mettre à jour
             </a>
+            <form method="get" action="">
+            <input type="hidden" name="action" value="ajoutPanier">
+            <input type="hidden" name="controller" value="utilisateur">
+            <input type="hidden" name="id_produit" value="$idProduitURL">
+            <input type="submit" value="Ajouter au panier" />
+        </form>
         </p>
     </section>
 EOT;
+
+echo <<< EOT
+        
+EOT;
+
+
 ?>
