@@ -162,6 +162,13 @@ p {
     overflow: auto;
     text-align: center;
 }
+ul{
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  flex-wrap: wrap;
+  margin-right: 5%;
+}
 img {
     max-width:  350px;
     display: block; 
