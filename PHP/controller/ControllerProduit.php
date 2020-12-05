@@ -17,7 +17,7 @@ class ControllerProduit {
 
     public static function readCategorie() {
         $tab_p = ModelProduit::selectCategorie($_GET['categorie_id']);
-        var_dump($tab_p);
+        
 
         $controller = 'produit';
         $view = "list";
