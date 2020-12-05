@@ -1,12 +1,12 @@
 <aside>
           <div class="menu_s">
-            <a href=""><div class="smenu_s" onclick="location.href='./services_fils/pulls.html';"><h1>Pulls</a>
+            <a href="?controller=produit&action=readCategorie&categorie_id=pull"><div class="smenu_s" onclick="location.href='?controller=produit&action=readCategorie&categorie_id=pull';"><h1>Pulls</a>
             </div>
-            <a href=""><div class="smenu_s" onclick="location.href='./services_fils/shirts.html';"><h1>T-shirts</a>
+            <a href=""><div class="smenu_s" onclick="location.href='';"><h1>T-shirts</a>
             </div>
-            <a href=""><div class="smenu_s" onclick="location.href='./services_fils/chaussures.html';"><h1>Chaussures</a>
+            <a href=""><div class="smenu_s" onclick="location.href='';"><h1>Chaussures</a>
             </div>
-            <a href=""><div class="smenu_s" onclick="location.href='';"><h1>Pins</a></h1>
+            <a href="?controller=produit&action=readCategorie&categorie_id=pins"><div class="smenu_s" onclick="location.href='?controller=produit&action=readCategorie&categorie_id=pins';"><h1>Pins</a></h1>
             </div><!--animation pour hover, agrandit la taille de la boite et rapetissit les autres-->
           </div>
 </aside>

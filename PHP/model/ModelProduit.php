@@ -41,4 +41,29 @@ class ModelProduit extends Model {
             $this->couleur = $data['couleur'];
         }
     }
+
+    public static function selectCategorie($categorie_id) {
+        try {
+            echo "select categorie\n";
+
+            $table_name = "p_" . static::$object;
+            $class_name = 'Model' . ucfirst(static::$object);
+
+            $sql = "SELECT * from $table_name WHERE categorie_id='$categorie_id'";
+            echo $sql . "\n";
+
+            $req_prep = Model::$pdo->query($sql);
+            $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
+            return $req_prep->fetchAll();
+            // Attention, si il n'y a pas de résultats, on renvoie false
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage(); // affiche un message d'erreur
+            } else {
+                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+            }
+            die();
+        }
+
+    }
 }

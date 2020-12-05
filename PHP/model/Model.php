@@ -29,8 +29,8 @@ public static function selectAll() {
         try {
             $pdo = self::$pdo;
             $table_name = "p_" . static::$object;
-            echo $table_name;
             $class_name = 'Model' . ucfirst(static::$object);
+            
             $sql = "SELECT * from $table_name";
             $rep = $pdo->query($sql);
             $rep->setFetchMode(PDO::FETCH_CLASS, $class_name);
