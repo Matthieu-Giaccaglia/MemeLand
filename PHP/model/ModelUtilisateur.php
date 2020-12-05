@@ -7,7 +7,7 @@ class ModelUtilisateur extends Model {
     private $prenom;
     private $nonce;
     private $email;
-    private $admin;
+    private $mdp;
     
     protected static $object = 'utilisateur';
     protected static $primary = 'login';
@@ -28,14 +28,14 @@ class ModelUtilisateur extends Model {
 
     // un constructeur
     public function __construct($data = array()) {
-        if (!is_null($data['email'])) $nonce = NULL;
+        //if (!is_null($data['email'])) $nonce = NULL;
         if (!empty($data)) {
             $this->login = $data['login'];
             $this->nom = $data['nom'];
             $this->prenom = $data['prenom'];
-            $this->nonce = $nonce;
+            $this->nonce = $data['nonce'];
             $this->email = $data['email'];
-            $this->admin = $data['admin'];
+            $this->mdp = $data['mdp'];
         }
     }
 }

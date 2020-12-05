@@ -13,6 +13,9 @@
         </header>
 
         <article>
+          <a class="navBuy" href="?controller=utilisateur&action=connexion">
+            <p>Connexion</p>
+          </a>
           <a href="?controller=utilisateur&action=panier">
             <img class="navBuy" src="./public/images/cart.png" alt="cart" size="40%"/>
           </a>
@@ -27,7 +30,7 @@
               <div class="dropdown-content">
                 <a href="index.php?controller=site&action=accueil">Accueil</a>
                 <a href="index.php?controller=produit&action=readAll">Produits</a>
-                <a href="">Inscription</a>
+                <a href="index.php?controller=utilisateur&action=create">Inscription</a>
                 <a href="index.php?controller=site&action=equipe">L'Equipe</a>
               </div>
             </div>

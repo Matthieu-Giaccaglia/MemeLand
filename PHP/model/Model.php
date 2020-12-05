@@ -141,12 +141,14 @@ public static function selectAll() {
                 $table = $table . "{$cle}, ";
                 $value = $value . " '" . str_replace( "'", "\'", $valeur ) . "', ";
             }
-        
+
+            $table =substr($table,0,-1);
+            $value =substr($value,0,-1);
+
             $table = "(" . rtrim($table,",") . ")";
             $value = "(" . rtrim($value,",") . ")";
 
             $sql = "INSERT INTO {$table_name} {$table} VALUES {$value}";
-            echo $sql;
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
 

@@ -1,5 +1,7 @@
 <?php
 
+require_once File::build_path(array('model', 'ModelUtilisateur.php')); // chargement du modèle
+
 class ControllerUtilisateur{
     
     protected static $object = "utilisateur";
@@ -25,8 +27,48 @@ class ControllerUtilisateur{
         $view = "ajoutPanier";
         $pagetitle = "Détails du produit";
 
-        $p = ModelProduit::select($id_produit);
+        $p = ModelUtilisateur::select($id_produit);
 
         require File::build_path(array("view","view.php"));
+    }
+
+    public static function create() {
+        $controller = self::$object;
+        $view = 'inscription';
+        $pagetitle = 'Créer un Utilisateur';
+        $user = new ModelUtilisateur(array(
+            'login' => "",
+            'nom' => "",
+            'prenom' => "",
+            'nonce' => "",
+            'email' => "",
+            'mdp' => ""
+        ));
+        
+        $action = "created";
+        $readOrReq = "required";
+        require File::build_path(array("view","view.php"));
+    }
+
+    public static function created() {
+        $pagetitle = "Gestion des produits";
+            
+        $save_succesful = ModelUtilisateur::save(array(
+            'login' => $_GET['login'],
+            'nom' => $_GET['nom'],
+            'prenom' => $_GET['prenom'],
+            'nonce' => $_GET['nonce'],
+            'email' => $_GET['email'],
+            'mdp' => $_GET['mdp']
+        ));
+        if ($save_succesful) {
+            $tab_p = ModelProduit::selectAll();
+            $controller = "produit";
+            $view = "created";
+        } else {
+            $view = "error";
+        }
+        
+        require File::build_path(array("view", "view.php"));
     }
 }
