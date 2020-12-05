@@ -13,12 +13,14 @@ $prixURL = rawurlencode($p->get("prix"));
 $idCouleurURL = rawurlencode($p->get("couleur"));
 $idCategorieURL = rawurlencode($p->get("categorie_id"));
 echo <<< EOT
-    <p> 
-        <b>Produit $nomHTML ($descriptionHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)</b>  
-        <img src="./public/images/produit/$imageHTML" alt="Walter" class="perso">
-        <a href="?controller=produit&action=update&id_produit=$idProduitURL">
-            Mettre à jour
-        </a>
-    </p>
+    <section>
+        <p> 
+            <b>Produit $nomHTML ($descriptionHTML) (Couleur : $idCouleurHTML) (Catégorie : $idCategorieHTML) (Prix : $prixHTML)</b>  
+            <img src="./public/images/produit/$imageHTML" alt="Walter" class="perso">
+            <a href="?controller=produit&action=update&id_produit=$idProduitURL">
+                Mettre à jour
+            </a>
+        </p>
+    </section>
 EOT;
 ?>
