@@ -10,6 +10,7 @@ class ControllerSite{
         $controller = self::$object;
         $view = "accueil";
         $pagetitle = "Accueil";
+        $is_connected = Session::is_connected();
 
         require File::build_path(array("view","view.php"));
     }
@@ -19,6 +20,7 @@ class ControllerSite{
         $controller = self::$object;
         $view = "equipe";
         $pagetitle = "équipe";
+        $is_connected = Session::is_connected();
 
         require File::build_path(array("view","view.php"));
     }

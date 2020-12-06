@@ -13,6 +13,8 @@ class ControllerProduit {
         $controller = 'produit';
         $view = "list";
         $pagetitle = "Tous les produits";
+        $is_connected = Session::is_connected();
+
         require File::build_path(array("view", "view.php"));
     }
 
@@ -23,6 +25,8 @@ class ControllerProduit {
         $controller = 'produit';
         $view = "list";
         $pagetitle = "Tous les " . $_GET['categorie_id'] . "s";
+        $is_connected = Session::is_connected();
+
         require File::build_path(array("view", "view.php"));
     }
 
@@ -32,12 +36,14 @@ class ControllerProduit {
             $controller = 'produit';
             $view = 'errorProduit';
             $pagetitle = 'Erreur';
+            $is_connected = Session::is_connected();
         
             require File::build_path(array("view","view.php"));
         } else {
             $controller = 'produit';
             $view = 'detail';
             $pagetitle = 'Détails du produit';
+            $is_connected = Session::is_connected();
         
             require File::build_path(array("view","view.php"));
         }
@@ -47,6 +53,8 @@ class ControllerProduit {
         $controller = 'produit';
         $view = 'update';
         $pagetitle = 'Créer un produit';
+        
+        
         
         $produit = new ModelProduit(array(
             'produit_id' => "",

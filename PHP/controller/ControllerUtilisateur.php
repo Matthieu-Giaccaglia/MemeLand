@@ -12,6 +12,7 @@ class ControllerUtilisateur{
         $controller = self::$object;
         $view = "panier";
         $pagetitle = "Panier";
+        $is_connected = Session::is_connected();
 
         $tab_panier = $_SESSION['panier'];
 
@@ -28,6 +29,7 @@ class ControllerUtilisateur{
         $controller = self::$object;
         $view = "ajoutPanier";
         $pagetitle = "Détails du produit";
+        $is_connected = Session::is_connected();
         
         $p = ModelProduit::select($id_produit);
 
@@ -99,14 +101,34 @@ class ControllerUtilisateur{
 
             $_SESSION['login'] = $u->get('login');
             $_SESSION['admin'] = $u->get('admin');
+            $_SESSION['nom'] = $u->get('nom');
+            $_SESSION['prenom'] = $u->get('prenom');
+            $_SESSION['connected'] = true;
             
 
             $controller = self::$object;
             $view = 'detail';
+            $is_connected = Session::is_connected();
         } else {
             $view = 'errorConnected';
         }
 
         require File::build_path(array("view", "view.php"));
+    }
+
+    public static function monCompte(){
+
+        if ($_SESSION['connected']) {
+
+            $u = ModelUtilisateur::select($_SESSION['login']);
+
+            $controller = self::$object;
+            $view = 'detail';
+            $is_connected = Session::is_connected(); 
+
+            require File::build_path(array("view", "view.php"));
+        } else {
+            self::connect();
+        }
     }
 }

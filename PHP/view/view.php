@@ -15,22 +15,20 @@
         <article>
           <div class="navBuy">
             <div class="navBuySon">
-              <?php
-              if(!Session::is_connected()){
-                echo <<<EOT
-                <a href="?controller=utilisateur&action=connect">
-                  <p>Connexion</p>
-                </a>
-                EOT;
-              }else{
-                $login = $_SESSION['login'];
-                $p = ModelUtilisateur::select($login);
-                $nom = $p->get("nom");
-                echo <<<EOT
-                <a href="?controller=utilisateur&action=connect">
-                  <p>$nom</p>
-                </a>
-                EOT;
+<?php
+    if($_SESSION['connected']) {
+      $nom = $_SESSION['nom'] . " " . $_SESSION['prenom'];
+      echo <<<EOT
+          <a href="?controller=utilisateur&action=monCompte">
+            <p>$nom</p>
+          </a>
+EOT;
+    } else {
+        echo <<<EOT
+        <a href="?controller=utilisateur&action=connect">
+            <p>Se connecter</p>
+        </a>
+EOT;
               }
               ?>
             </div>
