@@ -21,15 +21,15 @@ class ControllerUtilisateur{
     public static function ajoutPanier() {
         
         $tab_panier = $_SESSION['panier'];
-        $id_produit = $_GET["id_produit"];
+        $id_produit = $_GET['id_produit'];
         array_push($tab_panier, $id_produit);
         $_SESSION['panier'] = $tab_panier;
 
         $controller = self::$object;
         $view = "ajoutPanier";
         $pagetitle = "Détails du produit";
-
-        $p = ModelUtilisateur::select($id_produit);
+        
+        $p = ModelProduit::select($id_produit);
 
         require File::build_path(array("view","view.php"));
     }

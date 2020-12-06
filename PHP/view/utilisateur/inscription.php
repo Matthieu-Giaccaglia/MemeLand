@@ -30,7 +30,7 @@
                 <input type='hidden' name='action' value='<?php echo $action; ?>'>
                 <input type='hidden' name='controller' value='<?php echo $controller; ?>'>
                 <p>
-                    <input type="submit" value="Envoyer" />
+                    <input class="b_input" type="submit" value="Envoyer" />
                 </p>
             </fieldset> 
         </form>

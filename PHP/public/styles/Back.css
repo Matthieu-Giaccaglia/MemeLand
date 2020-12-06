@@ -181,6 +181,31 @@ footer{
 label{
   text-decoration: underline;
 }
+table{
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 28px;
+  letter-spacing: 0.095em;
+  font-weight: 500;
+  border: inset rgb(137, 8, 237) 3px;
+  background-color: rgb(211, 113, 2);
+}
+td {
+  border: inset rgb(137, 8, 237) 3px;
+  background-color: purple;
+}
+.b_input{
+  border: 2px inset salmon;
+  border-radius: 50px;
+  background-color: yellow;
+  cursor: pointer;
+  font-family: hard, arial;
+  font-size: 25px;
+  height: 50px;
+}
+.b_input:hover{
+  background-color: rgb(255, 255, 161);
+}
 .dropbtn {
   background-color: purple;
   padding: 13.8px;
@@ -235,6 +260,9 @@ label{
 .cart_small{
   width: 100px;
   max-height: 100%;
+}
+.button{
+  text-align: center;
 }
 .perso {
     width: 50%;

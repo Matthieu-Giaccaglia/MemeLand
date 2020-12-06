@@ -11,21 +11,36 @@
           </div>
 </aside>
 
+<section>
+    <h3>Liste des produits Util :</h3>
+    <main>
+      <ul>
+
 <?php
-echo "<section><h3>Liste des produits :</h3>";
-echo "<main><ul>";
 foreach ($tab_p as $p) {
     
     
     $vidProduitURL = rawurlencode($p->get("id_produit"));
     $image = $p->get("image");
+    $nom = $p->get("nom");
+    $categorie = $p->get("categorie_id");
+    $prix = $p->get("prix");
     
     echo <<< EOT
         <li> 
-            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image" class="perso"></a>
+            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image" class="perso">
+              <table>
+                <tr>
+                  <td>$nom</td>
+                  <td>$categorie</td>
+                  <td>$prix <strong>€</strong></td>
+                </tr>
+              </table>  
+            </a>
         </li>
 EOT;
 }
-echo "</ul>";
-echo "</ul></main></section>";
 ?>
+      </ul>
+    </main>
+</section>

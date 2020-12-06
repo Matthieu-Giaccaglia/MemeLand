@@ -28,14 +28,14 @@ echo <<< EOT
             </a>
 EOT;
 }
-echo <<< EOT
-        <form method="get" action="">
-            <input type="hidden" name="action" value="ajoutPanier">
-            <input type="hidden" name="controller" value="utilisateur">
-            <input type="hidden" name="id_produit" value="$idProduitURL">
-            <input type="submit" value="Ajouter au panier" />
-        </form>
-        </p>
-        </section>
-EOT;
 ?>
+    <div class="button">
+    <form method="get" action="">
+        <input type="hidden" name="action" value="ajoutPanier">
+        <input type="hidden" name="controller" value="utilisateur">
+        <input type="hidden" name="id_produit" value="$idProduitURL">
+        <input class="b_input" type="submit" value="Ajouter au panier" />
+    </form>
+    </div>
+    </p>
+</section>
