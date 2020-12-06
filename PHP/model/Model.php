@@ -107,11 +107,17 @@ public static function selectAll() {
 
             $set_parts = array();
             foreach ($data as $key => $value) {
-                $set_parts[] = "$key='" . str_replace( "'", "\'", $value ) . "'";
+                if(is_string($value)) 
+                    $set_parts[] = "$key='" . str_replace( "'", "\'", $value ) . "'";
+                else if ($value != null)
+                    $set_parts[] = "$key=" . str_replace( "'", "\'", $value );
+                else
+                    $set_parts[] = "$key=NULL";
             }
 
             $set_string = join(',', $set_parts);
-            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key=$data[$primary_key]";
+            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key='$data[$primary_key]'";
+            echo $sql;
             
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);

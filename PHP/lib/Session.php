@@ -10,6 +10,7 @@ class Session {
     }
 
     public static function create_session() {
+        session_name("WalterTheBosse");
         session_start();
         if(!isset($_SESSION['panier']))
             $_SESSION['panier'] = array();

@@ -34,7 +34,7 @@ class ModelUtilisateur extends Model {
             $this->login = $data['login'];
             $this->nom = $data['nom'];
             $this->prenom = $data['prenom'];
-            $this->nonce = '';
+            $this->nonce = $data['nonce'];
             $this->email = $data['email'];
             $this->mdp = $data['mdp'];
             $this->admin = '';

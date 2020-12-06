@@ -54,6 +54,7 @@ class ControllerUtilisateur{
             'nom' => "",
             'prenom' => "",
             'email' => "",
+            'nonce' => "",
             'mdp' => ""
         ));
         
@@ -65,6 +66,7 @@ class ControllerUtilisateur{
     public static function created() {
         $pagetitle = "Gestion des produits";
         if($_GET["mdp"] == $_GET["mdp_2"]) {
+            $nonce = Security::generateRandomHex();
             
             $save_succesful = ModelUtilisateur::save(array(
                 'login' => $_GET['login'],
@@ -72,12 +74,19 @@ class ControllerUtilisateur{
                 'prenom' => $_GET['prenom'],
                 'email' => $_GET['email'],
                 'admin' => false,
+                'nonce' => $nonce,
                 'mdp' => Security::hacher($_GET['mdp'])
             ));
+
+
+            $mail = "https://webinfo.iutmontp.univ-montp2.fr/~deneuvillew/PHP/projet-php/PHP/index.php?controller=utilisateur&action=validate&login=" . $_GET['login'] . "&nonce=" . $nonce;
+            mail('walter@yopmail.com', 'TEST', $mail);
+
             if ($save_succesful) {
-                $tab_p = ModelProduit::selectAll();
-                $controller = "produit";
-                $view = "created";
+                $controller = self::$object;
+                $view = "valideMail";
+                $pagetitle = 'Connexion';
+
             } else {
                 $view = "error";
             }
@@ -86,6 +95,31 @@ class ControllerUtilisateur{
             $view = "error";
         }
         require File::build_path(array("view", "view.php"));
+    }
+
+    public static function validate() {
+        $u = ModelUtilisateur::select($_GET['login']);
+        if ($u && $u->get('nonce')==$_GET['nonce']) {
+            
+            $update = ModelUtilisateur::update(array(
+                'login' => $u->get('login'),
+                'nonce' => NULL,
+                
+            ));
+
+            if ($update) {
+                $controller = self::$object;
+                $view = 'validate';
+                $pagetitle = 'Connexion';
+
+                require File::build_path(array("view", "view.php"));
+            }
+            else   
+                echo 'NOT NULL';
+        } else {
+            echo $u->get('nonce');
+            echo 'Wrong nonce';
+        }
     }
 
     public static function connect(){
@@ -102,20 +136,18 @@ class ControllerUtilisateur{
         if (ModelUtilisateur::checkPassword($_GET['login'], Security::hacher($_GET['mdp']))) {
             $u = ModelUtilisateur::select($_GET['login']);
             
-            if ($u->get('admin'))
-                echo 'ADMIN PUTAIN DE MERDE';
-            else
-                echo 'PAS ADMIN PUTAIN DE MERDE';
+            if ($u->get('nonce') == null) {
 
 
-            $_SESSION['login'] = $u->get('login');
-            $_SESSION['admin'] = $u->get('admin');
-            $_SESSION['nom'] = $u->get('nom');
-            $_SESSION['prenom'] = $u->get('prenom');
-            $_SESSION['connected'] = true;
-            
+                $_SESSION['login'] = $u->get('login');
+                $_SESSION['admin'] = $u->get('admin');
+                $_SESSION['nom'] = $u->get('nom');
+                $_SESSION['prenom'] = $u->get('prenom');
+                $_SESSION['connected'] = true;
+                
 
-            self::monCompte();
+                self::monCompte();
+            }
 
         } else {
             $view = 'errorConnected';
@@ -123,6 +155,8 @@ class ControllerUtilisateur{
         }
     
     }
+
+    
 
     public static function monCompte(){
 
