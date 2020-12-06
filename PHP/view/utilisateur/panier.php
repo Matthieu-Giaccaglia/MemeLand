@@ -38,7 +38,10 @@ EOT;
 ?>
     </main>
     <div class="button">
-        <?php if($prixTot != 0) echo "<p> Prix total : $prixTot</p>";?>
-        <input class="b_input" type="submit" value="Payer"/>
+        <form action="./index.php" method="get">
+            <?php if($prixTot != 0) echo "<p> Prix total : $prixTot</p>";?>
+            <input type="hidden" name="controller" value="utilisateur">
+            <button class="b_input" type="submit" name="action" value="payer">Payer</payer>
+        </form>
     </div>
 </section>

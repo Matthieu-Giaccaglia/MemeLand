@@ -15,9 +15,10 @@
                 <input type='hidden' name='action' value='connected'>
                 <input type='hidden' name='controller' value='<?php echo $controller; ?>'>
                 <p>
-                    <input type="submit" value="Envoyer" />
+                    <input class="b_input" type="submit" value="Envoyer" />
                 </p>
-            </fieldset> 
+            </fieldset>
+            <a href="index.php?controller=<?php echo $controller; ?>&action=create"><h3>S'inscrire</h3></a>
         </form>
     </div>
 </section>

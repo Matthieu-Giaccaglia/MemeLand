@@ -12,7 +12,7 @@
 </aside>
 
 <section>
-    <h3>Liste des produits Util :</h3>
+    <h3>Liste des produits :</h3>
     <main>
       <ul>
 

@@ -34,6 +34,14 @@ class ControllerUtilisateur{
         require File::build_path(array("view","view.php"));
     }
 
+    public static function payer() {
+        $controller = self::$object;
+        $view = "payer";
+        $pagetitle = "Payer";
+
+        require File::build_path(array("view","view.php"));
+    }
+
     public static function create() {
         $controller = self::$object;
         $view = 'inscription';
