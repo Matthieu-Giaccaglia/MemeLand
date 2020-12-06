@@ -39,6 +39,9 @@ class ControllerUtilisateur{
         $view = "payer";
         $pagetitle = "Payer";
 
+        if(!$_SESSION['connected']){
+            $view="pasConnexion";
+        }
         require File::build_path(array("view","view.php"));
     }
 
