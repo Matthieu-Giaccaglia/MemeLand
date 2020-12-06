@@ -223,12 +223,18 @@ label{
   display: flex;
   z-index: 3;
   position: fixed;
-  height: 10%;
-  top: 2px;
-  right: 3px;
-  background-color:rgb(107, 190, 68);
-  padding: 13.8px;
+  height: 100px;
+  width: 300px;
+  top: 5px;
+  right: 15px;
+}
+.navBuySon{
+  background-color:rgb(111, 170, 84);
   border: inset rgb(137, 8, 237) 3px;
+}
+.cart_small{
+  width: 100px;
+  max-height: 100%;
 }
 .perso {
     width: 50%;

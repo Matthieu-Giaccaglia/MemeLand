@@ -13,12 +13,18 @@
         </header>
 
         <article>
-          <a class="navBuy" href="?controller=utilisateur&action=connect">
-            <p>Connexion</p>
-          </a>
-          <a href="?controller=utilisateur&action=panier">
-            <img class="navBuy" src="./public/images/cart.png" alt="cart" size="40%"/>
-          </a>
+          <div class="navBuy">
+            <div class="navBuySon">
+              <a href="?controller=utilisateur&action=connect">
+                <p>Connexion</p>
+              </a>
+            </div>
+            <div class="navBuySon">
+              <a href="?controller=utilisateur&action=panier">
+                <img class="cart_small" src="./public/images/cart.png" alt="cart"/>
+              </a>
+            </div>
+          </div>
         </article>
 
         <nav>

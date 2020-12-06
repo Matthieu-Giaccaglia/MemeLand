@@ -87,8 +87,7 @@ class ControllerUtilisateur{
     }
 
     public static function connected() {
-
-        
+        $pagetitle = 'Mon compte';
         if (ModelUtilisateur::checkPassword($_GET['login'], Security::hacher($_GET['mdp']))) {
             $u = ModelUtilisateur::select($_GET['login']);
             
@@ -104,9 +103,8 @@ class ControllerUtilisateur{
 
             $controller = self::$object;
             $view = 'detail';
-            $pagetitle = 'Mon compte';
         } else {
-            $view = 'erreur';
+            $view = 'errorConnected';
         }
 
         require File::build_path(array("view", "view.php"));
