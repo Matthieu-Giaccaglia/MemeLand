@@ -87,7 +87,7 @@ class ControllerUtilisateur{
     }
 
     public static function connected() {
-        $pagetitle = 'Mon compte';
+        
         if (ModelUtilisateur::checkPassword($_GET['login'], Security::hacher($_GET['mdp']))) {
             $u = ModelUtilisateur::select($_GET['login']);
             
@@ -104,14 +104,13 @@ class ControllerUtilisateur{
             $_SESSION['connected'] = true;
             
 
-            $controller = self::$object;
-            $view = 'detail';
+            self::monCompte();
 
         } else {
             $view = 'errorConnected';
+            require File::build_path(array("view", "view.php"));
         }
-
-        require File::build_path(array("view", "view.php"));
+    
     }
 
     public static function monCompte(){
@@ -122,11 +121,23 @@ class ControllerUtilisateur{
 
             $controller = self::$object;
             $view = 'detail';
+            $pagetitle = 'Mon Compte';
  
 
             require File::build_path(array("view", "view.php"));
         } else {
             self::connect();
+        }
+    }
+
+    public static function deconnect() {
+
+        if($_SESSION['connected']) {
+
+            Session::delte_session();
+            Session::create_session();
+
+            ControllerSite::accueil();
         }
     }
 }

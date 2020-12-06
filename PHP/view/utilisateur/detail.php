@@ -22,5 +22,11 @@ echo <<< EOT
     </p>
 </section>
 EOT;
-
 ?>
+<div class="button">
+    <form method="get" action="">
+        <input type="hidden" name="action" value="deconnect">
+        <input type="hidden" name="controller" value="utilisateur">
+        <input class="b_input" type="submit" value="Se déconnecter" />
+    </form>
+</div>
