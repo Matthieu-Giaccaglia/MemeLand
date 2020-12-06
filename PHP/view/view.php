@@ -15,9 +15,24 @@
         <article>
           <div class="navBuy">
             <div class="navBuySon">
-              <a href="?controller=utilisateur&action=connect">
-                <p>Connexion</p>
-              </a>
+              <?php
+              if(!Session::is_connected()){
+                echo <<<EOT
+                <a href="?controller=utilisateur&action=connect">
+                  <p>Connexion</p>
+                </a>
+                EOT;
+              }else{
+                $login = $_SESSION['login'];
+                $p = ModelUtilisateur::select($login);
+                $nom = $p->get("nom");
+                echo <<<EOT
+                <a href="?controller=utilisateur&action=connect">
+                  <p>$nom</p>
+                </a>
+                EOT;
+              }
+              ?>
             </div>
             <div class="navBuySon">
               <a href="?controller=utilisateur&action=panier">
