@@ -1,6 +1,7 @@
 <?php
 
 require_once File::build_path(array('model', 'ModelProduit.php')); // chargement du modèle
+require_once File::build_path(array('lib', 'Session.php'));
 
 class ControllerProduit {
 

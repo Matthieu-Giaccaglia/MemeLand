@@ -13,7 +13,7 @@
         </header>
 
         <article>
-          <a class="navBuy" href="?controller=utilisateur&action=connexion">
+          <a class="navBuy" href="?controller=utilisateur&action=connect">
             <p>Connexion</p>
           </a>
           <a href="?controller=utilisateur&action=panier">

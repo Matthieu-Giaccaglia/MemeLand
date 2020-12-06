@@ -1,4 +1,5 @@
 <?php
+require_once File::build_path(array('lib', 'Session.php'));
 
 class ControllerSite{
     

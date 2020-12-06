@@ -1,6 +1,8 @@
 <?php
 
 require_once File::build_path(array('model', 'ModelUtilisateur.php')); // chargement du modèle
+require_once File::build_path(array('lib', 'Security.php')); //
+require_once File::build_path(array('lib', 'Session.php'));
 
 class ControllerUtilisateur{
     
@@ -40,7 +42,6 @@ class ControllerUtilisateur{
             'login' => "",
             'nom' => "",
             'prenom' => "",
-            'nonce' => "",
             'email' => "",
             'mdp' => ""
         ));
@@ -52,23 +53,62 @@ class ControllerUtilisateur{
 
     public static function created() {
         $pagetitle = "Gestion des produits";
+        if($_GET["mdp"] == $_GET["mdp_2"]) {
             
-        $save_succesful = ModelUtilisateur::save(array(
-            'login' => $_GET['login'],
-            'nom' => $_GET['nom'],
-            'prenom' => $_GET['prenom'],
-            'nonce' => $_GET['nonce'],
-            'email' => $_GET['email'],
-            'mdp' => $_GET['mdp']
-        ));
-        if ($save_succesful) {
-            $tab_p = ModelProduit::selectAll();
-            $controller = "produit";
-            $view = "created";
+            $save_succesful = ModelUtilisateur::save(array(
+                'login' => $_GET['login'],
+                'nom' => $_GET['nom'],
+                'prenom' => $_GET['prenom'],
+                'email' => $_GET['email'],
+                'admin' => false,
+                'mdp' => Security::hacher($_GET['mdp'])
+            ));
+            if ($save_succesful) {
+                $tab_p = ModelProduit::selectAll();
+                $controller = "produit";
+                $view = "created";
+            } else {
+                $view = "error";
+            }
         } else {
+            echo "-------------------------------------------------------------------------------------------------------------------";
             $view = "error";
         }
+        require File::build_path(array("view", "view.php"));
+    }
+
+    public static function connect(){
+
+        $controller = self::$object;
+        $view = 'connect';
+        $pagetitle = "Connexion";
+
+        require File::build_path(array("view", "view.php"));
+    }
+
+    public static function connected() {
+
         
+        if (ModelUtilisateur::checkPassword($_GET['login'], Security::hacher($_GET['mdp']))) {
+            $u = ModelUtilisateur::select($_GET['login']);
+            
+            if ($u->get('admin'))
+                echo 'ADMIN PUTAIN DE MERDE';
+            else
+                echo 'PAS ADMIN PUTAIN DE MERDE';
+
+
+            $_SESSION['login'] = $u->get('login');
+            $_SESSION['admin'] = $u->get('admin');
+            
+
+            $controller = self::$object;
+            $view = 'detail';
+            $pagetitle = 'Mon compte';
+        } else {
+            $view = 'erreur';
+        }
+
         require File::build_path(array("view", "view.php"));
     }
 }
