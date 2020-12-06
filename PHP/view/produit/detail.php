@@ -1,4 +1,8 @@
 <?php
+if(!isset($p)){
+    echo "aa";
+    $p = ModelProduit::select($_GET['id_produit']);
+}
 $nomHTML = htmlspecialchars($p->get("nom"));
 $descriptionHTML = htmlspecialchars($p->get("description"));
 $prixHTML = htmlspecialchars($p->get("prix"));
@@ -20,7 +24,6 @@ echo <<< EOT
             <img src="./public/images/produit/$imageHTML" alt="Walter" class="perso">
 EOT;
 
-echo Session::is_admin();
 if(Session::is_admin()) {
 echo <<< EOT
             <a href="?controller=produit&action=update&id_produit=$idProduitURL">
@@ -33,7 +36,7 @@ EOT;
     <form method="get" action="">
         <input type="hidden" name="action" value="ajoutPanier">
         <input type="hidden" name="controller" value="utilisateur">
-        <input type="hidden" name="id_produit" value="$idProduitURL">
+        <input type="hidden" name="id_produit" value="<?php echo $idProduitURL;?>">
         <input class="b_input" type="submit" value="Ajouter au panier" />
     </form>
     </div>

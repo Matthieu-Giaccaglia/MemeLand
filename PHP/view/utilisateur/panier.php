@@ -1,5 +1,5 @@
 <section>
-    <h3>Liste des produits Util :</h3>
+    <h3>Panier :</h3>
     <main>
         <ul>
 
