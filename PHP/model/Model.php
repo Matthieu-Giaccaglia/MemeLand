@@ -158,8 +158,6 @@ public static function selectAll() {
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
 
-            $values = array(
-            );
             // On donne les valeurs et on exécute la requête
             return $req_prep->execute();
            

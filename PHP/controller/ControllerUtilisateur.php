@@ -1,6 +1,8 @@
 <?php
 
-require_once File::build_path(array('model', 'ModelUtilisateur.php')); // chargement du modèle
+require_once File::build_path(array('model', 'ModelUtilisateur.php'));
+require_once File::build_path(array('model', 'ModelCommande.php')); // chargement du modèle
+ // chargement du modèle
 require_once File::build_path(array('lib', 'Security.php')); //
 require_once File::build_path(array('lib', 'Session.php'));
 
@@ -36,11 +38,19 @@ class ControllerUtilisateur{
 
     public static function payer() {
         $controller = self::$object;
-        $view = "payer";
-        $pagetitle = "Payer";
+        
 
-        if(!$_SESSION['connected']){
+        if($_SESSION['connected'] && !empty($_SESSION['panier'])){
+
+            ModelCommande::saveCommande($_SESSION['login'],date('Y-m-d'),$_SESSION['panier']);
+
+
+            $view = "payer";
+            $pagetitle = "Payer";
+            
+        } else {
             $view="pasConnexion";
+            $pagetitle = "Connexion";
         }
         require File::build_path(array("view","view.php"));
     }
