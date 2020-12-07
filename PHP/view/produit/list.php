@@ -40,6 +40,13 @@ foreach ($tab_p as $p) {
         </li>
 EOT;
 }
+if(Session::is_admin()) {
+  echo <<< EOT
+    <a href="?controller=produit&action=create">
+      <p>Créer un produit</p>
+    </a>
+  EOT;
+}
 ?>
       </ul>
     </main>

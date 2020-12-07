@@ -17,6 +17,7 @@ class Session {
 
         if(!isset($_SESSION['connected']))
             $_SESSION['connected'] = false;
+
     }
 
     public static function delte_session() {

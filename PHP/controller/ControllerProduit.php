@@ -2,6 +2,7 @@
 
 require_once File::build_path(array('model', 'ModelProduit.php')); // chargement du modèle
 require_once File::build_path(array('lib', 'Session.php'));
+require_once File::build_path(array('lib', 'Security.php'));
 
 class ControllerProduit {
 
@@ -53,8 +54,6 @@ class ControllerProduit {
         $view = 'update';
         $pagetitle = 'Créer un produit';
         
-        
-        
         $produit = new ModelProduit(array(
             'produit_id' => "",
             'nom' => "",
@@ -73,22 +72,32 @@ class ControllerProduit {
 
     public static function created() {
         $pagetitle = "Gestion des produits";
-        
-            
-         $save_succesful = ModelProduit::save(array(
-            'idProduit' => $_GET['idProduit'],
-            'nom' => $_GET['nom'],
-            'description' => $_GET['description'],
-            'prix' => $_GET['prix'],
-            'idCategorie' => $_GET['idCategorie'],
-        ));
-        if ($save_succesful) {
-            $tab_v = ModelProduit::selectAll();
-            $view = "created";
+
+        if (empty($_FILES['nom-du-fichier']) && !is_uploaded_file($_FILES['nom-du-fichier']['tmp_name'])) {
+            return;
         } else {
-            $view = "error";
+
+            $name = $_FILES['nom-du-fichier']['name'];
+            $pic_path = File::build_path(array('public','images','produit')) . "/$name";
+            if (!move_uploaded_file($_FILES['nom-du-fichier']['tmp_name'], $pic_path)) {
+                echo "La copie a échoué";
+            }
+            
+            $save_succesful = ModelProduit::save(array(
+                'id_produit' => $_POST['id_produit'],
+                'nom' => $_POST['nom'],
+                'description' => $_POST['description'],
+                'prix' => $_POST['prix'],
+                'categorie_id' => $_POST['categorie_id'],
+                'couleur' => $_POST['couleur'],
+            ));
+            if ($save_succesful) {
+                $tab_v = ModelProduit::selectAll();
+                $view = "created";
+            } else {
+                $view = "error";
+            }
         }
-        
         require File::build_path(array("view", "view.php"));
     }
 
@@ -103,8 +112,8 @@ class ControllerProduit {
         $pagetitle = "Gestion des produits";
 
         
-        $immat = $_GET['idProduit'];
-        $delete_successful = ModelProduit::delete($_GET['idProduit']);
+        $idProduit = $_GET['id_produit'];
+        $delete_successful = ModelProduit::delete($_GET['id_produit']);
         
         if ($delete_successful) {
             $tab_p = ModelProduit::selectAll();

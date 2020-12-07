@@ -35,14 +35,15 @@ class ModelCommande extends Model {
     }
 
     
-    public static function saveCommande($utilisateur_login, $date, $produit = array()) {
+    public static function saveCommande($utilisateur_login, $date,$prixTot, $tab_produit) {
         try {
             echo '------------------------------------------------';
 
-            $sql = "INSERT INTO p_commande (utilisateur_login, date) VALUES ('$utilisateur_login', '$date');";
-            foreach ($produit as $cle => $value){
+            $sql = "INSERT INTO p_commande (utilisateur_login, date, prix_total) VALUES ('$utilisateur_login', '$date', $prixTot);";
+            foreach ($tab_produit as $cle => $value){
                 
-                $sql = $sql . "INSERT INTO p_liste_article(commande_id, produit_id) VALUES (LAST_INSERT_ID(), $value);";
+                $sql = $sql . "INSERT INTO p_liste_article(commande_id, produit_id, nb_produit) 
+                                VALUES (LAST_INSERT_ID(), $cle, $value);";
             }
         
             $req_prep = Model::$pdo->prepare($sql);
@@ -63,12 +64,63 @@ class ModelCommande extends Model {
         }
     }
 
-    private static function ajoutProduit($id_commande, $idProduit) {
+    public static function readCommande($id_utilisateur) {
 
-        $sql = "INSERT INTO p_liste_article(commande_id, produit_id) VALUES ($id_commande, $idProduit);";
-        Model::$pdo->prepare($sql);
+        try {
+            $table_name = "p_" . static::$object;
+            $class_name = 'Model' . ucfirst(static::$object);
+            $primary_key = static::$primary;
+            $sql = "SELECT * from p_commande 
+                    WHERE utilisateur_login=$id_utilisateur";
+            
+            $req_prep = Model::$pdo->prepare($sql);
 
-    }
+            
+            $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
+            $tab_results = $req_prep->fetchAll();
+            
+            if (empty($tab_results))
+                return false;
+            return $tab_results;
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage(); // affiche un message d'erreur
+            } else {
+                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+            }
+            die();
+        }
+    } 
+
+    public static function readProduit($id_commande) {
+
+        try {
+            
+            $sql = "SELECT id_produit, categorie_id, prix, nom, description, image,couleur FROM p_produit p
+                    JOIN p_liste_article l ON p.id_produit=l.produit_id
+                    JOIN p_commande c ON l.commande_id=c.id_commande
+                    WHERE c.id_commande=$id_commande";
+            
+            $req_prep = Model::$pdo->prepare($sql);
+
+            
+            $req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelProduit');
+            $tab_results = $req_prep->fetchAll();
+            
+            if (empty($tab_results))
+                return false;
+            return $tab_results;
+
+        } catch (PDOException $e) {
+            if (Conf::getDebug()) {
+                echo $e->getMessage(); // affiche un message d'erreur
+            } else {
+                echo 'Une erreur est survenue <a href=""> retour a la page d\'accueil </a>';
+            }
+            die();
+        }
+    } 
+
 
     
 }

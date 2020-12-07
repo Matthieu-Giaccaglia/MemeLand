@@ -25,7 +25,7 @@ class Model {
         }
     }
 
-public static function selectAll() {
+    public static function selectAll() {
         try {
             $pdo = self::$pdo;
             $table_name = "p_" . static::$object;
@@ -79,7 +79,7 @@ public static function selectAll() {
 
     public static function delete($primary) {
         try {
-            $table_name = static::$object;
+            $table_name = "p_" . static::$object;
             $primary_key = static::$primary;
             $sql = "DELETE FROM $table_name WHERE $primary_key=:primary;";
             // Préparation de la requête

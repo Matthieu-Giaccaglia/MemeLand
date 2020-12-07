@@ -23,12 +23,20 @@
             <p>$nom</p>
           </a>
 EOT;
+      if ($_SESSION['admin']) {
+        echo <<<EOT
+          <a href="?controller=produit&action=create">
+            <p>Créer un produit</p>
+          </a>
+EOT;
+      }
     } else {
         echo <<<EOT
         <a href="?controller=utilisateur&action=connect">
             <p>Se connecter</p>
         </a>
 EOT;
+
               }
               ?>
             </div>
@@ -49,7 +57,12 @@ EOT;
               <div class="dropdown-content">
                 <a href="index.php?controller=site&action=accueil">Accueil</a>
                 <a href="index.php?controller=produit&action=readAll">Produits</a>
-                <a href="index.php?controller=utilisateur&action=create">Inscription</a>
+                <?php if($_SESSION['connected']) {
+                    echo "<a href='?controller=utilisateur&action=monCompte'>Mon compte</a>";
+                  }else{ 
+                    echo "<a href='index.php?controller=utilisateur&action=create'>Inscription</a>";
+                  }
+                ?>
                 <a href="index.php?controller=site&action=equipe">L'Equipe</a>
               </div>
             </div>
@@ -57,7 +70,7 @@ EOT;
 
         <?php
 
-            $filepath = File::build_path(array("view", static::$object, "$view.php"));
+            $filepath = File::build_path(array("view", $controller, "$view.php"));
             require $filepath;
         ?>
 

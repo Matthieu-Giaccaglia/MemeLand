@@ -264,6 +264,12 @@ td {
 .button{
   text-align: center;
 }
+.panier{
+  color: orange;
+}
+.panier_list{
+  display:block;
+}
 .perso {
     width: 50%;
     margin-top: 4%;

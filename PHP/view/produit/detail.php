@@ -1,6 +1,5 @@
 <?php
 if(!isset($p)){
-    echo "aa";
     $p = ModelProduit::select($_GET['id_produit']);
 }
 $nomHTML = htmlspecialchars($p->get("nom"));
@@ -28,6 +27,9 @@ if(Session::is_admin()) {
 echo <<< EOT
             <a href="?controller=produit&action=update&id_produit=$idProduitURL">
                 Mettre à jour
+            </a>
+            <a href="?controller=produit&action=delete&id_produit=$idProduitURL">
+                Supprimer
             </a>
 EOT;
 }

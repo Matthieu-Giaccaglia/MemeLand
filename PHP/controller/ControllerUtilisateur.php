@@ -10,50 +10,7 @@ class ControllerUtilisateur{
     
     protected static $object = "utilisateur";
 
-    public static function panier(){
-        $controller = self::$object;
-        $view = "panier";
-        $pagetitle = "Panier";
-
-        $tab_panier = $_SESSION['panier'];
-
-        require File::build_path(array("view","view.php"));
-    }
-
-    public static function ajoutPanier() {
-        
-        $tab_panier = $_SESSION['panier'];
-        $id_produit = $_GET['id_produit'];
-        array_push($tab_panier, $id_produit);
-        $_SESSION['panier'] = $tab_panier;
-
-        $controller = self::$object;
-        $view = "ajoutPanier";
-        $pagetitle = "Détails du produit";
-        
-        $p = ModelProduit::select($id_produit);
-
-        require File::build_path(array("view","view.php"));
-    }
-
-    public static function payer() {
-        $controller = self::$object;
-        
-
-        if($_SESSION['connected'] && !empty($_SESSION['panier'])){
-
-            ModelCommande::saveCommande($_SESSION['login'],date('Y-m-d'),$_SESSION['panier']);
-
-
-            $view = "payer";
-            $pagetitle = "Payer";
-            
-        } else {
-            $view="pasConnexion";
-            $pagetitle = "Connexion";
-        }
-        require File::build_path(array("view","view.php"));
-    }
+    
 
     public static function create() {
         $controller = self::$object;
@@ -194,5 +151,93 @@ class ControllerUtilisateur{
 
             ControllerSite::accueil();
         }
+    }
+
+    public static function panier(){
+        $controller = self::$object;
+        $view = "panier";
+        $pagetitle = "Panier";
+
+        $tab_panier = $_SESSION['panier'];
+        
+        require File::build_path(array("view","view.php"));
+    }
+
+    public static function changerPrixPanier($id_produit, $augmenter) {
+
+        $p = ModelProduit::select($id_produit);
+        
+        if (!isset($_SESSION['prix_total']))
+            $_SESSION['prix_total'] = 0;
+
+        if($augmenter)
+            $_SESSION['prix_total'] += $p->get('prix');
+        else
+            $_SESSION['prix_total'] -= $p->get('prix');
+    }
+
+    public static function ajoutPanier() {
+        
+
+        $tab_panier = $_SESSION['panier'];
+        $index = $_GET['id_produit'];
+
+        if(!isset($tab_panier["$index"]))
+            $tab_panier["$index"] = 1;
+        else
+            $tab_panier["$index"]++;
+
+        self::changerPrixPanier($index, true);
+
+        $_SESSION['panier'] = $tab_panier;
+
+        self::panier();
+    }
+
+    public static function enleverPanier() {
+        
+        $tab_panier = $_SESSION['panier'];
+        $index = $_GET['id_produit'];
+
+        if(isset($tab_panier["$index"])) {
+            
+            if($tab_panier["$index"] > 1) 
+                $tab_panier["$index"]--;
+            else if ($tab_panier["$index"] == 1)
+                unset($tab_panier["$index"]);
+
+            $_SESSION['panier'] = $tab_panier;
+            self::changerPrixPanier($index, false);
+
+            self::panier();
+
+        } else {
+            echo 'ERREUR';
+            return;
+        }        
+    }
+
+    public static function payer() {
+        $controller = self::$object;
+        
+
+        if($_SESSION['connected'] && !empty($_SESSION['panier'])){
+
+            $tab_panier = $_SESSION['panier'];
+            ModelCommande::saveCommande($_SESSION['login'],date('Y-m-d'),$_SESSION['prix_total'], $tab_panier);
+
+
+            $view = "payer";
+            $pagetitle = "Payer";
+            
+        }else if(empty($_SESSION['panier'])){
+            $view="payerVide";
+            $pagetitle = "Panier Vide";
+        }
+        else {
+            $view="pasConnexion";
+            $pagetitle = "Connexion";
+        }
+        require File::build_path(array("view","view.php"));
     }
 }

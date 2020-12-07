@@ -2,46 +2,68 @@
     <h3>Panier :</h3>
     <main>
 
-<?php
-$prixTot = 0;
-if(sizeof($tab_panier)==0){
-    echo "Votre panier est vide";
-}else{
-    echo "<ul>";
-    foreach ($tab_panier as $prod_p) {
-        $p = ModelProduit::select($prod_p);
-        
-        $vidProduitURL = rawurlencode($p->get("id_produit"));
-        $image = $p->get("image");
-        $nom = $p->get("nom");
-        $categorie = $p->get("categorie_id");
-        $prix = $p->get("prix");
-        
-        $prixTot = $prixTot + $p->get("prix");
+        <?php
 
-        echo <<< EOT
-            <li> 
-                <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image">
-                    <table>
-                        <tr>
-                        <td>$nom</td>
-                        <td>$categorie</td>
-                        <td>$prix <strong>€</strong></td>
-                        </tr>
-                    </table>
-                </a>
-            </li>
-EOT;
-    }
-    echo "</ul>";
-}
-?>
+            $prixTot = 0;
+            if(sizeof($tab_panier)==0){
+                echo "Votre panier est vide";
+            } else {
+                echo "<ul>";
+                foreach ($tab_panier as $key => $value) {
+                    $p = ModelProduit::select($key);
+            
+                    $vidProduitURL = rawurlencode($p->get("id_produit"));
+                    $image = $p->get("image");
+                    $nom = $p->get("nom");
+                    $categorie = $p->get("categorie_id");
+                    $prix = $p->get("prix")*$value;
+                    
+                    $prixTot = $prixTot + $prix;
+            
+                    echo "
+                        <li> 
+                            <table>
+                                <tr>
+                                    <td>
+                                        <a href='?controller=produit&action=read&id_produit=$vidProduitURL'>
+                                            <img src='./public/images/produit/$image' alt='produit_image' height='50px'>
+                                        </a>
+                                    </td>
+                                    <td>$nom</td>
+                                    <td>$categorie</td>
+                                    <td>$prix <strong>€</strong></td>
+                                    <td>
+                                        <form method='get' action=''>
+                                            <input type='hidden' name='controller' value='$controller'>
+                                            <input type='hidden' name='action' value='enleverPanier'>
+                                            <input type='hidden' name='id_produit' value='$key'>
+                                            <input class='b_input' type='submit' value='-'>
+                                        </form>
+                                    </td>
+                                    <td> $value </td>
+                                    <td>
+                                        <form method='get' action=''>
+                                            <input type='hidden' name='controller' value='$controller'>
+                                            <input type='hidden' name='action' value='ajoutPanier'>
+                                            <input type='hidden' name='id_produit' value='$key'>
+                                            <input class='b_input' type='submit' value='+'>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </table>    
+                        </li>";
+   
+                }
+                echo "
+                    </ul>
+                    <div class='button'>
+                        <form action='' method='get'>
+                            <input type='hidden' name='controller' value='utilisateur'>
+                            <p> Prix total : $prixTot</p> 
+                            <button class='b_input' type='submit' name='action' value='payer'>Payer</button>
+                        </form>
+                    </div>";
+            }
+        ?>
     </main>
-    <div class="button">
-        <form action="./index.php" method="get">
-            <?php if($prixTot != 0) echo "<p> Prix total : $prixTot</p>";?>
-            <input type="hidden" name="controller" value="utilisateur">
-            <button class="b_input" type="submit" name="action" value="payer">Payer</payer>
-        </form>
-    </div>
 </section>

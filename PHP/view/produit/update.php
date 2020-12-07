@@ -1,10 +1,10 @@
 <div>
-    <form method="get" action="">
+    <form method="post" action="?controller=produit&action=<?php echo $action; ?>" enctype="multipart/form-data">
         <fieldset>
             <legend>Mon formulaire :</legend>
             <p>
                 <label for="id_produit_id">Id</label> :
-                <input type="number" value="<?php echo $produit->get('id_produit'); ?>" name="id_produit" id="id_produit_id" <?php echo $readOrReq ?>>
+                <input type="number" value="<?php echo $produit->get('id_produit'); ?>" name="id_produit" id="id_produit_id" readonly>
             </p>
             <p>
                 <label for="nom_id">Nom</label> :
@@ -20,18 +20,21 @@
             </p>
             <p>
                 <label for="couleur_id">Couleur</label> :
-                <input type="text" value="<?php echo $produit->get('couleur'); ?>"name="couleur" id="couleur_id" >
+                <input type="text" value="<?php echo $produit->get('couleur'); ?>" name="couleur" id="couleur_id" >
             </p>
             <p>
                 <label for="categorie_id">Categorie</label> :
-                <input type="text" value="<?php echo $produit->get('categorie_id'); ?>"name="categorie_id" id="categorie_id"  required>
+                <input type="text" value="<?php echo $produit->get('categorie_id'); ?>" name="categorie_id" id="categorie_id"  required>
             </p>
             <p>
                 <label for="image_id">Image</label> :
-                <input type="text" value="<?php echo $produit->get('image'); ?>"name="image" id="image_id"  required>
+                <input type="text" value="<?php echo $produit->get('image'); ?>" name="image" id="image_id"  required>
             </p>
-            <input type='hidden' name='action' value='<?php echo $action; ?>'>
-            <input type='hidden' name='controller' value='<?php echo $controller; ?>'>
+            <p>
+                <label for="image_id">Upload une image :</label> :
+                <input type="file" value="<?php echo $produit->get('image'); ?>" name="image" id="image_id"  required>
+            </p>
+            
             <p>
                 <input type="submit" value="Envoyer" />
             </p>
