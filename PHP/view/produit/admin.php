@@ -17,7 +17,7 @@
 	<body>
 	   <ul>
 	      <?php while($p = $p_produit->fetch()) { ?>
-	      <li><?= $p['id_produit'] ?> : <?= $p['nom'] ?> - <a href="deleted.php?deleted=<?= $p['id_produit'] ?>">Supprimer</a></li>
+	      <li><?= $p['id_produit'] ?> : <?= $p['nom'] ?> - <a href="index.php?controller=produit&action=deleted&id_produit=<?= $p['id_produit'] ?>">Supprimer</a></li>
 	      <?php } ?>
 	   </ul>
 	</body>
