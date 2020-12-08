@@ -52,12 +52,12 @@ EOT;
                 <a href="index.php?controller=produit&action=readAll">Produits</a>
                 <?php 
                   if($_SESSION['connected']) {
+                    if($_SESSION['login']){
+                        echo "<a href='?controller=commande&action=mesCommades'>Mes commande</a>";
+                    }
                     echo "<a href='?controller=utilisateur&action=monCompte'>Mon compte</a>";
                   }else{ 
                     echo "<a href='index.php?controller=utilisateur&action=create'>Inscription</a>";
-                  }
-                  if($_SESSION['login']){
-                    echo "<a href='?controller=commande&action=mesCommades'>Mes commande</a>";
                   }
 
                   if (Session::is_admin()) {
