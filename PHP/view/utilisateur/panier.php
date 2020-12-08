@@ -1,6 +1,6 @@
 <section>
     <h3>Panier :</h3>
-    <main>
+    <main id="main_panier">
 
         <?php
 
@@ -8,7 +8,7 @@
             if(sizeof($tab_panier)==0){
                 echo "Votre panier est vide";
             } else {
-                echo "<ul>";
+                echo "<table class='panier'>";
                 foreach ($tab_panier as $key => $value) {
                     $p = ModelProduit::select($key);
             
@@ -21,8 +21,6 @@
                     $prixTot = $prixTot + $prix;
             
                     echo "
-                        <li> 
-                            <table>
                                 <tr>
                                     <td>
                                         <a href='?controller=produit&action=read&id_produit=$vidProduitURL'>
@@ -49,13 +47,11 @@
                                             <input class='b_input' type='submit' value='+'>
                                         </form>
                                     </td>
-                                </tr>
-                            </table>    
-                        </li>";
+                                </tr>";
    
                 }
                 echo "
-                    </ul>
+                    </table>
                     <div class='button'>
                         <form action='' method='get'>
                             <input type='hidden' name='controller' value='utilisateur'>

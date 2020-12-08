@@ -26,9 +26,9 @@ foreach ($tab_p as $p) {
     $categorie = $p->get("categorie_id");
     $prix = $p->get("prix");
     
-    echo <<< EOT
+    echo "
         <li> 
-            <a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image" class="perso">
+            <a href='?controller=produit&action=read&id_produit=$vidProduitURL'><img src='./public/images/produit/$image' alt='produit_image' class='perso'>
               <table>
                 <tr>
                   <td>$nom</td>
@@ -37,15 +37,7 @@ foreach ($tab_p as $p) {
                 </tr>
               </table>  
             </a>
-        </li>
-EOT;
-}
-if(Session::is_admin()) {
-  echo <<< EOT
-    <a href="?controller=produit&action=create">
-      <p>Créer un produit</p>
-    </a>
-  EOT;
+        </li>";
 }
 ?>
       </ul>

@@ -79,7 +79,7 @@ nav a{
   border-left: inset rgb(137, 8, 237) 3px;
 }
 nav div div{
-  border-bottom: solid rgb(0,255,100) 3px;
+  border-bottom: solid orange 3px;
 }
 nav div div a:hover{
   border-left: inset rgb(137, 8, 237) 5px;
@@ -266,9 +266,7 @@ td {
 }
 .panier{
   color: orange;
-}
-.panier_list{
-  display:block;
+  margin-top: 10px;
 }
 .perso {
     width: 50%;
@@ -349,6 +347,10 @@ td {
   position: absolute;
   top:16.5px;
   z-index:2;
+}
+#main_panier{
+  display:flex;
+  flex-direction: column;
 }
 #Equipe{
     margin-bottom: 10%;

@@ -45,25 +45,23 @@ class Model {
         }
     }
 
-    public static function select($primary) {
+    public static function select($primary_value) {
         try {
             $table_name = "p_" . static::$object;
             $class_name = 'Model' . ucfirst(static::$object);
             $primary_key = static::$primary;
-            $sql = "SELECT * from $table_name WHERE $primary_key=:primary";
-            // Préparation de la requête
-            $req_prep = Model::$pdo->prepare($sql);
+            $sql = "SELECT * from $table_name WHERE $primary_key=:tag_primary";
 
             $values = array(
-                "primary" => $primary
+                "tag_primary" => $primary_value,
             );
-            // On donne les valeurs et on exécute la requête	 
+      
+            $req_prep = Model::$pdo->prepare($sql);	 
             $req_prep->execute($values);
 
-            // On récupère les résultats comme précédemment
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
             $tab_results = $req_prep->fetchAll();
-            // Attention, si il n'y a pas de résultats, on renvoie false
+           
             if (empty($tab_results))
                 return false;
             return $tab_results[0];
@@ -104,6 +102,7 @@ class Model {
         try {
             $table_name = "p_" . static::$object;
             $primary_key = static::$primary;
+            $class_name = 'Model' . ucfirst(static::$object);
 
             $set_parts = array();
             foreach ($data as $key => $value) {
@@ -121,6 +120,12 @@ class Model {
             
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
+            $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
+            $tab_results = $req_prep->fetchAll();
+            // Attention, si il n'y a pas de résultats, on renvoie false
+            if (empty($tab_results))
+                return false;
+            return $tab_results[0];
 
             // On donne les valeurs et on exécute la requête	 
             return $req_prep->execute($data);
@@ -138,12 +143,10 @@ class Model {
         try {
 
             $table_name = "p_" . static::$object;
-
             $table = '';
             $value = '';
 
             foreach ($data as $cle => $valeur){
-            
                 $table = $table . "{$cle}, ";
                 $value = $value . " '" . str_replace( "'", "\'", $valeur ) . "', ";
             }
@@ -154,11 +157,9 @@ class Model {
             $table = "(" . rtrim($table,",") . ")";
             $value = "(" . rtrim($value,",") . ")";
 
-            $sql = "INSERT INTO {$table_name} {$table} VALUES {$value}";
-            // Préparation de la requête
+            $sql = "INSERT INTO $table_name $table VALUES $value;";
             $req_prep = Model::$pdo->prepare($sql);
-
-            // On donne les valeurs et on exécute la requête
+            
             return $req_prep->execute();
            
         } catch (PDOException $e) {

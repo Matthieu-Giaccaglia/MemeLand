@@ -23,13 +23,6 @@
             <p>$nom</p>
           </a>
 EOT;
-      if ($_SESSION['admin']) {
-        echo <<<EOT
-          <a href="?controller=produit&action=create">
-            <p>Créer un produit</p>
-          </a>
-EOT;
-      }
     } else {
         echo <<<EOT
         <a href="?controller=utilisateur&action=connect">
@@ -57,11 +50,20 @@ EOT;
               <div class="dropdown-content">
                 <a href="index.php?controller=site&action=accueil">Accueil</a>
                 <a href="index.php?controller=produit&action=readAll">Produits</a>
-                <?php if($_SESSION['connected']) {
+                <?php 
+                  if($_SESSION['connected']) {
                     echo "<a href='?controller=utilisateur&action=monCompte'>Mon compte</a>";
                   }else{ 
                     echo "<a href='index.php?controller=utilisateur&action=create'>Inscription</a>";
                   }
+                  if($_SESSION['login']){
+                    echo "<a href='?controller=commande&action=mesCommades'>Mes commande</a>";
+                  }
+
+                  if (Session::is_admin()) {
+                    echo "<a href='?controller=produit&action=create'>Créer un produit</a>";
+                  }
+
                 ?>
                 <a href="index.php?controller=site&action=equipe">L'Equipe</a>
               </div>

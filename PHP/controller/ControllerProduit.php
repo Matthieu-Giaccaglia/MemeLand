@@ -38,15 +38,15 @@ class ControllerProduit {
             $view = 'errorProduit';
             $pagetitle = 'Erreur';
             
-            require File::build_path(array("view","view.php"));
         } else {
             $controller = 'produit';
             $view = 'detail';
             $pagetitle = 'Détails du produit';
     
         
-            require File::build_path(array("view","view.php"));
+            
         }
+        require File::build_path(array("view","view.php"));
     }
 
     public static function create() {
@@ -55,7 +55,7 @@ class ControllerProduit {
         $pagetitle = 'Créer un produit';
         
         $produit = new ModelProduit(array(
-            'produit_id' => "",
+            'id_produit' => "",
             'nom' => "",
             'description' => "",
             'prix' => "",
@@ -65,7 +65,7 @@ class ControllerProduit {
         ));
         
         $action = "created";
-        $readOrReq = "required";
+        $required = true;
         
         require File::build_path(array("view","view.php"));
     }
@@ -73,29 +73,44 @@ class ControllerProduit {
     public static function created() {
         $pagetitle = "Gestion des produits";
 
-        if (empty($_FILES['nom-du-fichier']) && !is_uploaded_file($_FILES['nom-du-fichier']['tmp_name'])) {
+        if (empty($_FILES['monFichier']) && !is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
             return;
         } else {
 
-            $name = $_FILES['nom-du-fichier']['name'];
-            $pic_path = File::build_path(array('public','images','produit')) . "/$name";
-            if (!move_uploaded_file($_FILES['nom-du-fichier']['tmp_name'], $pic_path)) {
-                echo "La copie a échoué";
-            }
-            
-            $save_succesful = ModelProduit::save(array(
-                'id_produit' => $_POST['id_produit'],
-                'nom' => $_POST['nom'],
-                'description' => $_POST['description'],
-                'prix' => $_POST['prix'],
-                'categorie_id' => $_POST['categorie_id'],
-                'couleur' => $_POST['couleur'],
-            ));
-            if ($save_succesful) {
-                $tab_v = ModelProduit::selectAll();
-                $view = "created";
-            } else {
-                $view = "error";
+            $nameOrigine = $_FILES['monFichier']['name'];
+            $elementChemin = pathinfo($nameOrigine);
+            $extensionFichier = $elementChemin['extension'];
+            $extensionAutorisée = array('jpeg', 'jpg', 'png');
+
+            if(!(in_array($extensionFichier, $extensionAutorisée)))
+                echo 'Wrong extension';
+
+            else {
+
+                $repertoireDest = File::build_path(array('public','images','produit')) . "/";
+                $newName = Security::generateRandomHex() . "." . $extensionFichier;
+
+                if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
+                    echo "La copie a échoué";
+                } else {
+                
+                    $save = ModelProduit::save(array(
+                        'nom' => $_POST['nom'],
+                        'description' => $_POST['description'],
+                        'prix' => $_POST['prix'],
+                        'categorie_id' => $_POST['categorie_id'],
+                        'couleur' => $_POST['couleur'],
+                        'image' => $newName
+                    ));
+
+                    if ($save) {
+                        self::readAll();
+                    } else {
+                        $controller = 'produit';
+                        $view = 'errorProduit';
+                        $pagetitle = 'Erreur';
+                    }
+                }
             }
         }
         require File::build_path(array("view", "view.php"));
@@ -103,13 +118,13 @@ class ControllerProduit {
 
     public static function error() {
         $view = "error";
-        $pagetitle = "Gestion des voitures";
+        $pagetitle = "error";
         require File::build_path(array("view", "view.php"));
     }
 
     public static function delete() {
         $view = "deleted";
-        $pagetitle = "Gestion des produits";
+        $pagetitle = "Delete";
 
         
         $idProduit = $_GET['id_produit'];
@@ -140,7 +155,7 @@ class ControllerProduit {
             $pagetitle = 'Modifier un produit';
             
             $action = "updated";
-            $readOrReq = "readonly";
+            $required = false;
         
             require File::build_path(array("view","view.php"));
         } else {
@@ -155,24 +170,48 @@ class ControllerProduit {
 
     public static function updated() {
         require_once File::build_path(array("model","ModelProduit.php"));
+
+        if (empty($_FILES['monFichier']) && !is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
+            return;
+        } else {
+
+            $nameOrigine = $_FILES['monFichier']['name'];
+            $elementChemin = pathinfo($nameOrigine);
+            $extensionFichier = $elementChemin['extension'];
+            $extensionAutorisée = array('jpeg', 'jpg', 'png');
+
+            if(!(in_array($extensionFichier, $extensionAutorisée)))
+                echo 'Wrong extension';
+
+            else {
+
+                $repertoireDest = File::build_path(array('public','images','produit')) . "/";
+                $newName = Security::generateRandomHex() . "." . $extensionFichier;
+
+                if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
+                    echo "La copie a échoué";
+                } else {
         
-        ModelProduit::update(array(
-            'id_produit' => $_GET["id_produit"],
-            'nom' => $_GET['nom'],
-            'description' => $_GET['description'],
-            'prix' => $_GET['prix'],
-            'categorie_id' => $_GET['categorie_id'],
-            'image' => $_GET['image'],
-            'couleur' => $_GET['couleur']
-        ));
-        
-        $p = ModelProduit::select($_GET["id_produit"]); 
-        
-        $controller = 'produit';
-        $view = 'updated';
-        $pagetitle = 'Modification Effectuée';
-        
-        require File::build_path(array("view","view.php"));
+                    ModelProduit::update(array(
+                        'id_produit' => $_POST["id_produit"],
+                        'nom' => $_POST['nom'],
+                        'description' => $_POST['description'],
+                        'prix' => $_POST['prix'],
+                        'categorie_id' => $_POST['categorie_id'],
+                        'image' => $_POST['image'],
+                        'couleur' => $_POST['couleur']
+                    ));
+                    
+                    $p = ModelProduit::select($_POST["id_produit"]); 
+                    
+                    $controller = 'produit';
+                    $view = 'updated';
+                    $pagetitle = 'Modification Effectuée';
+                    
+                    require File::build_path(array("view","view.php"));
+                }
+            }
+        } 
     }
 
 }
