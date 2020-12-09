@@ -22,8 +22,10 @@ class ControllerUtilisateur{
             $pagetitle = 'Créer un Utilisateur';
 
             require File::build_path(array("view","view.php"));
+            return;
         } else {
             ControllerSite::accueil();
+            return;
         }
         
     }
@@ -60,29 +62,23 @@ class ControllerUtilisateur{
                     $controller = self::$object;
                     $view = "valideMail";
                     $pagetitle = 'Connexion';
+                    require File::build_path(array("view", "view.php"));
+                    return;
 
                 } else {
-                    $controller = 'site';
-                    $view = "erreur";
-                    $viewAfter = 'equipe';
-                    $pagetitle = "ERREUR CREATION COMPTE";
                     $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être créé. Veillez contacter un administateur du site.";
-                    require File::build_path(array("view", "view.php"));
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
                     return;
                 }
             } else {
-                $controller = self::$object;
-                $view = 'erreurMpdIdentique';
                 $action = 'created';
-                $pagetitle = 'Créer un Utilisateur';
+                $typeErreur = "Les mots de passe ne sont pas identiques.";
+                self::erreur('update', "Créer un Utilisateur", $typeErreur);
+                return;
             }
-                
-
-            require File::build_path(array("view", "view.php"));
-            
-
         } else {
             ControllerSite::accueil();
+            return;
         }
 
     }
@@ -101,8 +97,10 @@ class ControllerUtilisateur{
             $old = "Ancien ";
             $reqMdp = "";
             require File::build_path(array("view","view.php"));
+            return;
         } else {
             ControllerSite::accueil();
+            return;
         }
     }
 
@@ -124,23 +122,19 @@ class ControllerUtilisateur{
 
                     if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
                         $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
-                        var_dump($updateArray);
+            
                     } else {
-                        $controller = self::$object;
-                        $view = 'erreurMdpIdentique';
-                        $pagetitle = 'Modifier son compte';
                         $action = 'updated';
-                        require File::build_path(array("view", "view.php"));
+                        $typeErreur = "Les mots de passe ne sont pas identiques.";
+                        self::erreur('update', "Modifier son compte", $typeErreur);
                         return;
                     }
 
                 } else {
-                        $controller = self::$object;
-                        $view = 'erreurConnected';
-                        $viewAfter = 'update';
-                        $pagetitle = 'MDP PAS BON';
-                        require File::build_path(array("view", "view.php"));
-                        return;
+                    $action = 'updated';
+                    $typeErreur = "Le login ou le mot de passe n'est pas bon.";
+                    self::erreur('update', "Modifier son compte", $typeErreur);
+                    return;
                 }
             } 
                  
@@ -153,21 +147,17 @@ class ControllerUtilisateur{
             if ($update_succesful) {
                 $u = ModelUtilisateur::select($_POST['login']); 
                 
-                $controller = 'utilisateur';
+                $controller = self::$object;
                 $view = 'updated';
                 $pagetitle = 'Modification Effectuée';
-                $action = 'updated';
+                require File::build_path(array("view", "view.php"));
+                return;
 
             } else {
-                $controller = 'site';
-                $view = "erreur";
-                $viewAfter = 'equipe';
-                $pagetitle = "ERREUR MODIFICATION COMPTE";
                 $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être modifié. Veillez contacter un administateur du site.";
+                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                return;
             }
-            require File::build_path(array("view", "view.php"));
-        
-        
         } else {
             ControllerSite::accueil();  
         }  
@@ -181,41 +171,56 @@ class ControllerUtilisateur{
             
             if ($delete_successful) {
                 ControllerUtilisateur::deconnect();
+                return;
             } else {
-                $controller = 'site';
-                $view = "erreur";
-                $viewAfter = 'equipe';
-                $pagetitle = "ERREUR SUPPRESSION COMPTE";
                 $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être supprimé. Veillez contacter un administateur du site.";
-                require File::build_path(array("view", "view.php"));
+                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                return;
             }
          
         } else {
             ControllerSite::accueil();
+            return;
         }
     }
 
     public static function validate() {
-        $u = ModelUtilisateur::select($_GET['login']);
-        if ($u && $u->get('nonce')==$_GET['nonce']) {
-            
-            $update = ModelUtilisateur::update(array(
-                'login' => $u->get('login'),
-                'nonce' => NULL,
-            ));
+        if(isset($_GET['login']) && $_GET['nonce']) {
+            $u = ModelUtilisateur::select($_GET['login']);
+            if ($u && $u->get('nonce')==$_GET['nonce']) {
+                
+                $update = ModelUtilisateur::update(array(
+                    'login' => $u->get('login'),
+                    'nonce' => NULL,
+                ));
 
-            if ($update) {
-                $controller = self::$object;
-                $view = 'validate';
-                $pagetitle = 'Connexion';
+                if ($update) {
+                    $controller = self::$object;
+                    $view = 'validate';
+                    $pagetitle = 'Connexion';
 
-                require File::build_path(array("view", "view.php"));
+                    require File::build_path(array("view", "view.php"));
+                    return;
+                } else {   
+                    $typeErreur = "Nous sommes désolé, la création de votre compte n'a pas pu aboutir. Veillez contacter un administateur du site.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    return;
+                }
+            } else if ($u && $u->get('nonce') == NULL) { 
+                $typeErreur = "Votre compte a déjà été validé.";
+                ControllerSite::erreur('site', "Accueil", $typeErreur);
+                return;
+            } else if ($u && $u->get('nonce') != $_GET['nonce']){
+                $typeErreur = "Le lien n'est plus valide.";
+                ControllerSite::erreur('site', "Accueil", $typeErreur);
+                return;
+            } else {
+                ControllerSite::accueil();
+                return;
             }
-            else   
-                echo 'NOT NULL';
         } else {
-            echo $u->get('nonce');
-            echo 'Wrong nonce';
+            ControllerSite::accueil();
+            return;
         }
     }
 
@@ -227,8 +232,10 @@ class ControllerUtilisateur{
             $pagetitle = "Connexion";
 
             require File::build_path(array("view", "view.php"));
+            return;
         } else {
             ControllerSite::accueil();
+            return;
         }
     }
 
@@ -238,7 +245,7 @@ class ControllerUtilisateur{
             if (ModelUtilisateur::checkPassword($_POST['login'], Security::hacher($_POST['mdp']))) {
                 $u = ModelUtilisateur::select($_POST['login']);
                 
-                if ($u->get('nonce') == null) {
+                if ($u && $u->get('nonce') == null) {
 
                     $_SESSION['login'] = $u->get('login');
                     $_SESSION['admin'] = $u->get('admin');
@@ -248,17 +255,17 @@ class ControllerUtilisateur{
                     
 
                     self::monCompte();
+                    return;
                 }
 
             } else {
-                $controller = self::$object;
-                $view = 'erreurConnected';
-                $viewAfter = 'connect';
-                $pagetitle = 'MDP PAS BON';
-                require File::build_path(array("view", "view.php"));
+                $typeErreur = "Le login ou le mot de passe n'est pas bon.";
+                self::erreur('connect', "Connexion", $typeErreur);
+                return;
             }
         } else {
             ControllerSite::accueil();
+            return;
         }
     
     }
@@ -270,18 +277,19 @@ class ControllerUtilisateur{
         if ($_SESSION['connected']) {
 
             $u = ModelUtilisateur::select($_SESSION['login']);
-
             $controller = self::$object;
             $view = 'detail';
             $pagetitle = 'Mon Compte';
- 
-
             require File::build_path(array("view", "view.php"));
+            return;
+ 
         } else {
-            $controller = self::$object;
-            $view = 'erreurPasConnect';
-            $pagetitle = 'Connexion';
+            $typeErreur = "Connectez-vous afin de poursuivre votre navigation.";
+            self::erreur('connect', "Connexion", $typeErreur);
+            return;
         }
+
+        
     }
 
     public static function deconnect() {
@@ -289,8 +297,12 @@ class ControllerUtilisateur{
         if($_SESSION['connected']) {
             Session::delte_session();
             Session::create_session();
-        }
-        ControllerSite::accueil();
+            ControllerSite::accueil();
+        } else {
+            $typeErreur = "Connectez-vous afin de poursuivre votre navigation.";
+            self::erreur('connect', "Connexion", $typeErreur);
+            return;
+        }   
     }
 
     public static function panier(){
@@ -342,6 +354,7 @@ class ControllerUtilisateur{
             self::panier();
         } else {
             ControllerProduit::erreurProduit();
+            return;
         }
     }
 
@@ -371,43 +384,51 @@ class ControllerUtilisateur{
                 return;
 
             } else {
-                $controller = self::$object;
-                $view = 'erreur';
-                $viewAfter = 'panier';
-                $pagetitle = 'Panier';
-                $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si c'est pas le cas, veillez contacté un administrateur";
+                $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si ce n'est pas le cas, veillez contacter un administrateur";
+                self::erreur('panier', "Panier", $typeErreur);
+                return;
             }  
         } else {
-            $controller = self::$object;
-            $view = 'erreur';
-            $viewAfter = 'panier';
-            $pagetitle = 'Panier';
-            $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si c'est pas le cas, veillez contacté un administrateur"; 
-        }     
+            $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si ce n'est pas le cas, veillez contacter un administrateur";
+            self::erreur('panier', "Panier", $typeErreur);
+            return;
+        }   
     }
 
     public static function payer() {
-        $controller = self::$object;
+        
         
 
         if($_SESSION['connected'] && !empty($_SESSION['panier'])){
 
             $tab_panier = $_SESSION['panier'];
-            var_dump($tab_panier);
             ModelCommande::saveCommande($_SESSION['login'],date('Y-m-d'),$_SESSION['prix_total'], $tab_panier);
 
-
+            $controller = self::$object;
             $view = "payer";
             $pagetitle = "Payer";
+            require File::build_path(array("view","view.php"));
+            return;
             
         }else if(empty($_SESSION['panier'])){
             self::panier();
             return;
         }
         else {
-            $view="erreurConnection";
-            $pagetitle = "Connexion";
+            $typeErreur = "Connectez-vous afin de poursuivre votre navigation.";
+            self::erreur('connect', "Connexion", $typeErreur);
+            return;
         }
+       
+    }
+
+    public static function erreur($afterView,$titlepage,$messageErreur) {
+        $controller = self::$object;
+        $view = 'erreur';
+        $viewAfter = $afterView;
+        $typeErreur = $messageErreur;
+        $pagetitle = $titlepage;
+
         require File::build_path(array("view","view.php"));
     }
 }

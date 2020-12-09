@@ -23,4 +23,13 @@ class ControllerSite{
         
         require File::build_path(array("view","view.php"));
     }
+
+    public static function erreur($afterView,$titlepage,$messageErreur) {
+        $view = 'erreur';
+        $viewAfter = $afterView;
+        $typeErreur = $messageErreur;
+        $pagetitle = $titlepage;
+        
+        require File::build_path(array("view","view.php"));
+    }
 }

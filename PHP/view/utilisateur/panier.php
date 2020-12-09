@@ -38,7 +38,7 @@
                                             <input class='b_input' type='submit' value='-'>
                                         </form>
                                     </td>
-                                    <td> $value </td>
+
                                     <td>
                                         <form method='get' action=''>
                                             <input type='hidden' name='controller' value='$controller'>

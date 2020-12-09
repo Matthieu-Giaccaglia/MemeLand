@@ -16,6 +16,12 @@
             'mdp' => ""
         ));
       
+    } else if($action == 'updated') {
+        $loginReadOrReq = 'readonly';
+        $reqMdp = "";
+        $old = "Ancien";
+        $createOrUpdate = 'Mettre à jour';
+
     }
 
 ?>
