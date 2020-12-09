@@ -71,9 +71,11 @@ class ControllerUtilisateur{
                     return;
                 }
             } else {
+                $controller = self::$object;
+                $view = 'erreurMdpIdentique';
+                $pagetitle = 'Modifier son compte';
                 $action = 'created';
-                $typeErreur = "Les mots de passe ne sont pas identiques.";
-                self::erreur('update', "Créer un Utilisateur", $typeErreur);
+                require File::build_path(array("view", "view.php"));
                 return;
             }
         } else {
@@ -85,19 +87,18 @@ class ControllerUtilisateur{
 
     public static function update(){
 
-        if(Session::is_user($_GET['login']) || Session::is_admin()) {
-            $controller = self::$object;
-            $view = 'update';
-            $pagetitle = 'Modifier un Utilisateur';
-            $user = ModelUtilisateur::select($_GET['login']);
-            
-            $action = "updated";
-            $readOrReq = "readonly";
-            $createOrUpdate = "Modifier";
-            $old = "Ancien ";
-            $reqMdp = "";
-            require File::build_path(array("view","view.php"));
-            return;
+        if(!is_null(myGet('login'))) {
+            if( Session::is_user($_GET['login']) || Session::is_admin()) {
+                $controller = self::$object;
+                $view = 'update';
+                $pagetitle = 'Modifier un Utilisateur';
+                $action='updated';
+                require File::build_path(array("view","view.php"));
+                return;
+            } else {
+                ControllerSite::accueil();
+                return;
+            }
         } else {
             ControllerSite::accueil();
             return;
@@ -106,78 +107,93 @@ class ControllerUtilisateur{
 
     public static function updated(){
 
-        if(Session::is_user($_POST['login']) || Session::is_admin()) {
-            $pagetitle='Mon compte';
-            
-            $updateArray = array(
-                'login' => $_POST['login'],
-                'nom' => $_POST['nom'],
-                'prenom' => $_POST['prenom'],
-                'email' => $_POST['email'],
-            );
-            
+        if(!is_null(myGet('login'))) {
+            if(Session::is_user($_POST['login']) || Session::is_admin()) {
+                $pagetitle='Mon compte';
+                
+                $updateArray = array(
+                    'login' => $_POST['login'],
+                    'nom' => $_POST['nom'],
+                    'prenom' => $_POST['prenom'],
+                    'email' => $_POST['email'],
+                );
+                
 
-            if(isset($_POST["mdp"]) && isset($_POST["new_mdp"]) && isset($_POST["conf_mdp"])) {
-                if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
+                if(!is_null(myGet("mdp")) && !is_null(myGet("new_mdp")) && !is_null(myGet("conf_mdp"))) {
+                    if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
 
-                    if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
-                        $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
-            
+                        if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
+                            $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
+                
+                        } else {
+                            $controller = self::$object;
+                            $view = 'erreurMpdIdentique';
+                            $pagetitle = 'Modifier son compte';
+                            $action = 'updated';
+                            require File::build_path(array("view", "view.php"));
+                            return;
+                        }
+
                     } else {
+                        $controller = self::$object;
+                        $view = 'erreurLoginMdp';
+                        $viewAfter = 'update';
+                        $pagetitle = 'Modifier son compte';
                         $action = 'updated';
-                        $typeErreur = "Les mots de passe ne sont pas identiques.";
-                        self::erreur('update', "Modifier son compte", $typeErreur);
+                        require File::build_path(array("view", "view.php"));
                         return;
                     }
+                } 
+                    
+                if(Session::is_admin()){
+                    $updateArray['admin'] = isset($_POST['admin']);
+                }
+
+                $update_succesful = ModelUtilisateur::update($updateArray);
+            
+                if ($update_succesful) {
+                    $u = ModelUtilisateur::select($_POST['login']); 
+                    
+                    $controller = self::$object;
+                    $view = 'updated';
+                    $pagetitle = 'Modification Effectuée';
+                    require File::build_path(array("view", "view.php"));
+                    return;
 
                 } else {
-                    $action = 'updated';
-                    $typeErreur = "Le login ou le mot de passe n'est pas bon.";
-                    self::erreur('update', "Modifier son compte", $typeErreur);
+                    $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être modifié. Veillez contacter un administateur du site.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
                     return;
                 }
-            } 
-                 
-            if(Session::is_admin()){
-                $updateArray['admin'] = isset($_POST['admin']);
-            }
-
-            $update_succesful = ModelUtilisateur::update($updateArray);
-        
-            if ($update_succesful) {
-                $u = ModelUtilisateur::select($_POST['login']); 
-                
-                $controller = self::$object;
-                $view = 'updated';
-                $pagetitle = 'Modification Effectuée';
-                require File::build_path(array("view", "view.php"));
-                return;
-
             } else {
-                $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être modifié. Veillez contacter un administateur du site.";
-                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
-                return;
+                ControllerSite::accueil();  
             }
         } else {
-            ControllerSite::accueil();  
-        }  
+            ControllerSite::accueil();
+            return;
+        }
     }
 
     public static function delete() {
 
-        if( Session::is_user($_GET['login']) || Session::is_admin()) {
-        
-            $delete_successful = ModelUtilisateur::delete($_GET['login']);
+        if(!is_null(myGet("login"))) {
+            if( Session::is_user($_GET['login']) || Session::is_admin()) {
             
-            if ($delete_successful) {
-                ControllerUtilisateur::deconnect();
-                return;
+                $delete_successful = ModelUtilisateur::delete($_GET['login']);
+                
+                if ($delete_successful) {
+                    ControllerUtilisateur::deconnect();
+                    return;
+                } else {
+                    $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être supprimé. Veillez contacter un administateur du site.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    return;
+                }
+            
             } else {
-                $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être supprimé. Veillez contacter un administateur du site.";
-                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                ControllerSite::accueil();
                 return;
             }
-         
         } else {
             ControllerSite::accueil();
             return;
@@ -185,8 +201,10 @@ class ControllerUtilisateur{
     }
 
     public static function validate() {
-        if(isset($_GET['login']) && $_GET['nonce']) {
+        if(!is_null(myGet('login')) && !is_null(myGet('nonce'))) {
+
             $u = ModelUtilisateur::select($_GET['login']);
+            
             if ($u && $u->get('nonce')==$_GET['nonce']) {
                 
                 $update = ModelUtilisateur::update(array(
@@ -241,7 +259,7 @@ class ControllerUtilisateur{
 
     public static function connected() {
         
-        if (!Session::is_connected()) {
+        if (!Session::is_connected() && !is_null(myGet('login')) && !is_null(myGet('mdp'))) {
             if (ModelUtilisateur::checkPassword($_POST['login'], Security::hacher($_POST['mdp']))) {
                 $u = ModelUtilisateur::select($_POST['login']);
                 
@@ -332,44 +350,47 @@ class ControllerUtilisateur{
 
     public static function ajoutPanier() {
         
+        if (!is_null($_GET['id_produit'])) {
+            if(!isset($_SESSION['panier']))
+                $_SESSION['panier'] = array();
 
-        if(!isset($_SESSION['panier']))
-            $_SESSION['panier'] = array();
-
-        $produit_exist = ModelProduit::select($_GET['id_produit']);
-            
+            $produit_exist = ModelProduit::select($_GET['id_produit']);
+                
             if($produit_exist && $produit_exist->get('disponible')) {
-            $tab_panier = $_SESSION['panier'];
-            $index = $_GET['id_produit'];
+                $tab_panier = $_SESSION['panier'];
+                $index = $_GET['id_produit'];
 
-            if(!isset($tab_panier["$index"]))
-                $tab_panier["$index"] = 1;
-            else
-                $tab_panier["$index"]++;
+                if(!isset($tab_panier["$index"]))
+                    $tab_panier["$index"] = 1;
+                else
+                    $tab_panier["$index"]++;
 
-            self::changerPrixPanier($index, true);
+                self::changerPrixPanier($index, true);
 
-            $_SESSION['panier'] = $tab_panier;
+                $_SESSION['panier'] = $tab_panier;
 
-            self::panier();
+                self::panier();
+                return;
+            } else {
+                $typeErreur = "Vous essayez d'ajouter un produit non disponible. Si ce n'est pas le cas, veillez contacter un administrateur";
+                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                return;
+            }
         } else {
-            ControllerProduit::erreurProduit();
+            ControllerSite::accueil();
             return;
         }
     }
 
     public static function enleverPanier() {
         
-        if(isset($_SESSION['tab_panier']))
+        if(!isset($_SESSION['tab_panier']))
             $_SESSION['tab_panier'] = array();
 
-        $tab_panier = $_SESSION['tab_panier'];
 
-
-        if(isset($_GET['id_produit'])) {
-            $tab_panier = $_SESSION['panier'];
+        if(!is_null(('id_produit'))) {
             $index = $_GET['id_produit'];
-
+            $tab_panier = $_SESSION['panier'];
             if(isset($tab_panier["$index"])) {
                 
                 if($tab_panier["$index"] > 1) 
@@ -384,13 +405,15 @@ class ControllerUtilisateur{
                 return;
 
             } else {
+                
                 $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si ce n'est pas le cas, veillez contacter un administrateur";
-                self::erreur('panier', "Panier", $typeErreur);
+                ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
                 return;
             }  
         } else {
+           
             $typeErreur = "Vous essayez d'enlever un produit non-présent dans votre panier. Si ce n'est pas le cas, veillez contacter un administrateur";
-            self::erreur('panier', "Panier", $typeErreur);
+            ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
             return;
         }   
     }
@@ -428,7 +451,6 @@ class ControllerUtilisateur{
         $viewAfter = $afterView;
         $typeErreur = $messageErreur;
         $pagetitle = $titlepage;
-
         require File::build_path(array("view","view.php"));
     }
 }

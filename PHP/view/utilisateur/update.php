@@ -17,6 +17,11 @@
         ));
       
     } else if($action == 'updated') {
+        if(isset($_GET['login']))
+            $user = ModelUtilisateur::select($_GET['login']);
+        else if (isset($_POST['login']))
+            $user = ModelUtilisateur::select($_POST['login']);
+
         $loginReadOrReq = 'readonly';
         $reqMdp = "";
         $old = "Ancien";
@@ -50,7 +55,7 @@
                     <input type="email" value="<?php echo $user->get('email'); ?>"name="email" id="email_id" <?php echo $loginReadOrReq?>>
                 </p>
                 <p>
-                    <label for="mdp_id"><?php echo $old; ?>Mot de Passe :</label>
+                    <label for="mdp_id"><?php echo "$old "; ?>Mot de Passe :</label>
                     <input type="password" value="" name="mdp" id="mdp_id" <?php echo $reqMdp ?>>
                 </p>
                 <?php

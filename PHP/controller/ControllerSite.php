@@ -25,6 +25,7 @@ class ControllerSite{
     }
 
     public static function erreur($afterView,$titlepage,$messageErreur) {
+        $controller = self::$object;
         $view = 'erreur';
         $viewAfter = $afterView;
         $typeErreur = $messageErreur;
