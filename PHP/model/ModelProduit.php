@@ -51,11 +51,17 @@ class ModelProduit extends Model {
             $class_name = 'Model' . ucfirst(static::$object);
 
             $sql = "SELECT * from $table_name 
-                    WHERE categorie_id='$categorie_id'
+                    WHERE categorie_id=:tag_categorie
                     AND disponible=true";
+
+            $values = array(
+                'tag_categorie' => $categorie_id
+            );
             
 
             $req_prep = Model::$pdo->query($sql);
+            $req_prep->execute($values);
+
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
             return $req_prep->fetchAll();
             // Attention, si il n'y a pas de résultats, on renvoie false

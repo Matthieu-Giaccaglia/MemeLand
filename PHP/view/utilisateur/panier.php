@@ -6,7 +6,7 @@
 
             $prixTot = 0;
             if(sizeof($tab_panier)==0){
-                echo "Votre panier est vide";
+                echo "<p>Votre panier est vide</p>";
             } else {
                 echo "<table class='panier'>";
                 foreach ($tab_panier as $key => $value) {

@@ -41,16 +41,22 @@ class ModelCommande extends Model {
         try {
             echo '------------------------------------------------';
 
-            $sql = "INSERT INTO p_commande (utilisateur_login, date, prix_total) VALUES ('$utilisateur_login', '$date', $prixTot);";
+            $sql = "INSERT INTO p_commande (utilisateur_login, date, prix_total) VALUES (:tag_login, :tag_date, :tag_prix_tot);";
             foreach ($tab_produit as $cle => $value){
                 
                 $sql = $sql . "INSERT INTO p_listeArticle(commande_id, produit_id, nb_produit) 
                                 VALUES (LAST_INSERT_ID(), $cle, $value);";
             }
             echo $sql;
+
+            $values = array(
+                'tag_login' => $utilisateur_login,
+                'tag_date' => $date,
+                'tag_prix_tot' => $prixTot
+            );
         
             $req_prep = Model::$pdo->prepare($sql);
-            return $req_prep->execute();
+            return $req_prep->execute($values);
   
            
         } catch (PDOException $e) {

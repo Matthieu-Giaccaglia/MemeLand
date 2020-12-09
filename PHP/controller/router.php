@@ -19,12 +19,10 @@ function myGet($nomVar){
 $controller = 'site';
 
 if (!is_null(myGet('controller')) && !is_null(myGet('action'))) {
-    //test admin
     $controller = $_GET['controller'];
     $action = $_GET['action'];
 
-    if ($controller == 'admin' && 
-        !Session::is_admin()) {
+    if ($controller == 'admin' && !Session::is_admin()) {
         $controller = 'site';
         $action = 'accueil';
     }
@@ -32,7 +30,7 @@ if (!is_null(myGet('controller')) && !is_null(myGet('action'))) {
     $controller_class ="Controller" . ucfirst($controller);
 
     if (!class_exists($controller_class) || !in_array($action, get_class_methods($controller_class))) {
-        echo "ERREUR ROUTER";
+        ControllerSite::accueil();
     } else {
         $controller_class::$action();
     }

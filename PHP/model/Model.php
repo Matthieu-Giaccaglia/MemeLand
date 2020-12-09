@@ -115,16 +115,16 @@ class Model {
             }
 
             $set_string = join(',', $set_parts);
-            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key='$data[$primary_key]'";
+            $sql = "UPDATE $table_name SET $set_string WHERE $primary_key=:tag_primary";
             
+            $values = array(
+                "tag_primary" => $data[$primary_key]
+            );
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
-            $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
-            $tab_results = $req_prep->fetchAll();
-            // Attention, si il n'y a pas de résultats, on renvoie false
 
             // On donne les valeurs et on exécute la requête	 
-            return $req_prep->execute($data);
+            return $req_prep->execute($values);
         } catch (PDOException $e) {
             if (Conf::getDebug()) {
                 echo $e->getMessage(); // affiche un message d'erreur

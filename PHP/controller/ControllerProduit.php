@@ -10,43 +10,56 @@ class ControllerProduit {
 
     public static function readAll() {
         $tab_p = ModelProduit::selectAllDispo();     //appel au modèle pour gerer la BD
-        $controller = 'produit';
+        $controller = self::$object;
         $view = "list";
         $pagetitle = "Tous les produits";
-
-
         require File::build_path(array("view", "view.php"));
     }
 
     public static function readCategorie() {
-        $tab_p = ModelProduit::selectCategorie($_GET['categorie_id']);
-        
 
-        $controller = 'produit';
-        $view = "list";
-        $pagetitle = "Tous les " . $_GET['categorie_id'] . "s";
+        if(!is_null(myGet('categorie_id'))) {
 
+            $tab_p = ModelProduit::selectCategorie($_GET['categorie_id']);
 
-        require File::build_path(array("view", "view.php"));
+            if($tab_p) {
+                $controller = 'produit';
+                $view = "list";
+                $pagetitle = "Tous les " . $_GET['categorie_id'] . "s";
+                require File::build_path(array("view", "view.php"));
+                return;
+            } else {
+                $erreurType = 'Catégorie non existante';
+                self::erreur('list', 'Tous nos produits', $erreurType);
+                return; 
+            }
+        } else {
+            $erreurType = 'Catégorie non sélectionnée';
+            self::erreur('list', 'Tous nos produits', $erreurType);
+            return;
+        }
     }
 
     public static function read() {
-        $p = ModelProduit::select($_GET["id_produit"]);
-        if ($p == false){
-            $controller = 'produit';
-            $view = 'erreur';
-            $typeErreur= "Le produit d'id: ".$_GET['id_produit']." n'existe pas";
-            $pagetitle = 'ErreurRead';
-            
+        if(!is_null(myGet('id_produit'))) {
+            $p = ModelProduit::select($_GET["id_produit"]);
+            if ($p){
+                $controller = self::$object;
+                $view = 'detail';
+                $pagetitle = 'Détails du produit';
+                require File::build_path(array("view","view.php"));
+                return;
+
+            } else {
+                $erreurType = 'Produit non disponible';
+                self::erreur('list', 'Tous nos produits', $erreurType);
+                return;
+            }
         } else {
-            $controller = 'produit';
-            $view = 'detail';
-            $pagetitle = 'Détails du produit';
-    
-        
-            
+            $erreurType = 'Aucun produit sélectionné';
+            self::erreur('list', 'Tous nos produits', $erreurType);
+            return;
         }
-        require File::build_path(array("view","view.php"));
     }
 
     public static function create() {
@@ -54,204 +67,227 @@ class ControllerProduit {
             $controller = 'produit';
             $view = 'update';
             $pagetitle = 'Créer un produit';
-            
-            $produit = new ModelProduit(array(
-                'id_produit' => "",
-                'nom' => "",
-                'description' => "",
-                'prix' => "",
-                'categorie_id' => "",
-                'couleur' => "",
-                'disponible' =>"",
-                'image' => ""
-            ));
-            
             $action = "created";
-            $required = true;
-        }else{
-            $typeErreur = 'Un utilisateur ne peut pas créer de produit';
-            ControllerSite::erreur('site', "Accueil", $typeErreur);
+            require File::build_path(array("view","view.php"));
+            return;
+        } else {
+            self::readAll();
+            return;
         }
-        
-        require File::build_path(array("view","view.php"));
+            
     }
 
     public static function created() {
         if(Session::is_admin()){
-            $pagetitle = "Gestion des produits";
-            $controller = 'produit';
-            $view = 'created';
+            if (!is_null('nom') && !is_null('description') && !is_null('prix') 
+                && !is_null('categorie_id') && !is_null('couleur')) {
+            
+                $nameFile = self::nameUploadFile();
 
+                if($nameFile != 0 || $nameFile != -1 && $nameFile != -2) {
+                    
+                    $save = ModelProduit::save(array(
+                        'nom' => $_POST['nom'],
+                        'description' => $_POST['description'],
+                        'prix' => $_POST['prix'],
+                        'categorie_id' => $_POST['categorie_id'],
+                        'couleur' => $_POST['couleur'],
+                        'disponible' => isset($_POST['disponible']),
+                        'image' => $nameFile
+                    ));
 
-            $nameFile = self::nameUploadFile();
+                    if ($save) {
+                        $tab_p = ModelProduit::selectAll();
+                        $controller = 'admin';
+                        $view = "created";
+                        $pagetitle = "Produit crée";
+                        require File::build_path(array('view', 'view.php'));
+                        return;
+                    } else {
+                        $typeErreur = "Erreur de sauvegarde. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.";
+                        ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                        return;
+                    }
 
-            if($nameFile) {
-                
-                $save = ModelProduit::save(array(
-                    'nom' => $_POST['nom'],
-                    'description' => $_POST['description'],
-                    'prix' => $_POST['prix'],
-                    'categorie_id' => $_POST['categorie_id'],
-                    'couleur' => $_POST['couleur'],
-                    'disponible' => isset($_POST['disponible']),
-                    'image' => $nameFile
-                ));
-
-                if ($save) {
-                    self::readAll();
+                } else if($nameFile == 0) {
+                    $controller = self::$object;
+                    $view = 'erreurExtension';
+                    $pagetitle = 'Créer un produit';
+                    $action = "created";
+                    require File::build_path(array("view", "view.php"));
+                    return;
+                } else if ($nameFile == -1) {
+                    $typeErreur = "Erreur d'upload. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    return;
                 } else {
-                    //ERROR
-                    $view = 'erreur';
-                    $typeErreur = 'Problème de sauvegarde Produit '.$_POST['id_produit'];
-                    $pagetitle = 'Erreur';
+                    $typeErreur = "Image vide.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    return; 
                 }
             } else {
-                //ERROR_UPLOAD
+                $typeErreur = "Tous les champs n'ont pas été remplis.";
+                ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                return; 
             }
-        } else{
-            $typeErreur = 'Un utilisateur ne peut pas créer de produit num2';
-            ControllerSite::erreur('site', "Accueil", $typeErreur);
+        } else {
+            self::readAll();
+            return;
         }
-        require File::build_path(array("view", "view.php"));
-    }
-
-    public static function error() {
-        $view = "erreur";
-        $pagetitle = "erreur";
-        require File::build_path(array("view", "view.php"));
     }
 
     public static function delete() {
         if(Session::is_admin()){
-            $view = "deleted";
-            $pagetitle = "Delete";
 
-            
-            $idProduit = $_GET['id_produit'];
-            $delete_successful = ModelProduit::delete($_GET['id_produit']);
-            
-            if ($delete_successful) {
-                $tab_p = ModelProduit::selectAll();
-
-                $controller = self::$object;
+            if(!is_null(myGet('id_produit'))) {
                 $view = "deleted";
-                $pagetitle = "Produit supprimée";
+                $pagetitle = "Delete";
+
+                
+                $idProduit = $_GET['id_produit'];
+                $delete_successful = ModelProduit::delete($_GET['id_produit']);
+                
+                if ($delete_successful) {
+                    $tab_p = ModelProduit::selectAll();
+                    $controller = 'admin';
+                    $view = "deleted";
+                    $pagetitle = "Produit supprimée";
+                    require File::build_path(array("view","view.php"));
+                    return; 
+                } else {
+                    $typeErreur = "La suppression s'est mal passée. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.";
+                    ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                    return; 
+                }
             } else {
-                $controller = self::$object;
-                $typeErreur = "La suppression s'est mal passée";
-                $view = "erreur";
+                $typeErreur = 'Aucun produit sélectionnée.';
+                ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                return; 
             }
-        }else{
-            $typeErreur = 'Un utilisateur ne peut pas supprimer de produit';
-            ControllerSite::erreur('site', "Accueil", $typeErreur);
+        } else {
+            self::readAll();
+            return;
         }
-        require File::build_path(array("view", "view.php"));
     }
 
     public static function update() {
         if(Session::is_admin()){
-            $produitUpdate = $_GET["id_produit"];
-            echo $produitUpdate;
-            $produit = ModelProduit::select($produitUpdate);
-            
-            if ($produit) {
-                $controller = self::$object;
-                $view = 'update';
-                $pagetitle = 'Modifier un produit';
+            if(!is_null(myGet('id_produit'))) {
+                $produitUpdate = myGet("id_produit");
+    
+                $produit = ModelProduit::select($produitUpdate);
                 
-                $action = "updated";
-                $required = false;
-            
-                require File::build_path(array("view","view.php"));
+                if ($produit) {
+                    $controller = self::$object;
+                    $view = 'update';
+                    $pagetitle = 'Modifier un produit';                    
+                    $action = "updated";
+                
+                    require File::build_path(array("view","view.php"));
+                } else {
+                    $typeErreur = 'Problème de sauvegarde. ';
+                    ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                    return; 
+                }
             } else {
-                $controller = 'produit';
-                $view = 'erreur';
-                $pagetitle = 'Erreur de updated';
-                $typeErreur = "Le produit s'est mal enregistré, impossible de selectioner";
-
-                require File::build_path(array("view","view.php"));
-                die();
+                $typeErreur = 'Aucun produit sélectionnée. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.';
+                ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                return; 
             }
         }else{
-            $typeErreur = 'Un utilisateur ne peut pas update de produit';
-            ControllerSite::erreur('site', "Accueil", $typeErreur);
+            self::readAll();
+            return;
         }
     }
 
     public static function updated() {
         if(Session::is_admin()){
-            $updateArray = array(
-                'id_produit' => $_POST["id_produit"],
-                'nom' => $_POST['nom'],
-                'description' => $_POST['description'],
-                'prix' => $_POST['prix'],
-                'categorie_id' => $_POST['categorie_id'],
-                'disponible' => isset($_POST['disponible']),
-                'couleur' => $_POST['couleur']
-            );
+            if (!is_null('id_produit') && !is_null('nom') && !is_null('description') && !is_null('prix') 
+                && !is_null('categorie_id') && !is_null('couleur')) {
+                $updateArray = array(
+                    'id_produit' => $_POST["id_produit"],
+                    'nom' => $_POST['nom'],
+                    'description' => $_POST['description'],
+                    'prix' => $_POST['prix'],
+                    'categorie_id' => $_POST['categorie_id'],
+                    'disponible' => isset($_POST['disponible']),
+                    'couleur' => $_POST['couleur']
+                );
 
-            $nameFile = self::nameUploadFile();
+                $nameFile = self::nameUploadFile();
 
-            if($nameFile)
-                $updateArray['image'] = $nameFile;
+                if($nameFile != 0 && $nameFile != -1 && $nameFile != -2){
+                    $updateArray['image'] = $nameFile;
+                } else if($nameFile == 0) {
+                    $controller = self::$object;
+                    $view = 'erreurExtension';
+                    $pagetitle = 'Créer un produit';
+                    $action = "updated";
+                    require File::build_path(array("view", "view.php"));
+                    return;
+                } else if($nameFile == -1) {
+                    $typeErreur = "Erreur d'upload. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.";
+                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    return;
+                }
 
-            ModelProduit::update($updateArray);
-            
-            $p = ModelProduit::select($_POST["id_produit"]); 
-            
-            $controller = 'produit';
-            $view = 'updated';
-            $pagetitle = 'Modification Effectuée';
-        }else{
-            $typeErreur = 'Un utilisateur ne peut pas update de produit num2';
-            ControllerSite::erreur('site', "Accueil", $typeErreur);
-        }
-        
-            require File::build_path(array("view","view.php"));
-        } 
-
-
-        private static function nameUploadFile(){
-            if(Session::is_admin()){
-                if (is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
-
-                    $nameOrigine = $_FILES['monFichier']['name'];
-                    $elementChemin = pathinfo($nameOrigine);
-                    $extensionFichier = $elementChemin['extension'];
-                    $extensionAutorisée = array('jpeg', 'jpg', 'png');
-
-                    if(!(in_array($extensionFichier, $extensionAutorisée)))
-                        echo 'Wrong extension';
-
-                    else {
-
-                        $repertoireDest = File::build_path(array('public','images','produit')) . "/";
-                        $newName = Security::generateRandomHex() . "." . $extensionFichier;
-
-                        if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
-                            return false;
-                        } else {
-                            return $newName;
-                        }
-                    }
-                } else {
-                    return false;
-                } 
-            }else{
-                $typeErreur = 'Un utilisateur ne peut pas Upload de files';
-                ControllerSite::erreur('site', "Accueil", $typeErreur);
+                ModelProduit::update($updateArray);
+                
+                $p = ModelProduit::select($_POST["id_produit"]); 
+                
+                $controller = 'produit';
+                $view = 'updated';
+                $pagetitle = 'Modification Effectuée';
+                require File::build_path(array("view", "view.php"));
+            } else {
+                $typeErreur = "Tous les champs n'ont pas été remplis. Si vous êtes uniquement administateur, veuillez contacter votre supérieur.";
+                ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                return; 
             }
+        } else {
+            self::readAll();
+            return;
         }
+    } 
 
-        public static function erreurProduit() {
 
-            $controller = self::$object;
-            $view = 'erreurProduitExist';
-            $pagetitle = 'Tous nos articles';
-            $tab_p = ModelProduit::selectAllDispo();
+    private static function nameUploadFile(){
+        if (is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
 
-            require File::build_path(array("view","view.php"));
-        }
-    
+            $nameOrigine = $_FILES['monFichier']['name'];
+            $elementChemin = pathinfo($nameOrigine);
+            $extensionFichier = $elementChemin['extension'];
+            $extensionAutorisée = array('jpeg', 'jpg', 'png');
 
+            if(!(in_array($extensionFichier, $extensionAutorisée))){
+                //Mauvaise Extension
+                return 0;
+            } else {
+
+                $repertoireDest = File::build_path(array('public','images','produit')) . "/";
+                $newName = Security::generateRandomHex() . "." . $extensionFichier;
+
+                if (move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
+                    return $newName;
+                } else {
+                    //impossible UPLOAD
+                    return -1;
+                }
+            }
+        } else {
+            //Empty $_FILES
+            return -2;
+        } 
     }
+
+    public static function erreur($afterView,$titlepage,$messageErreur) {
+        $controller = self::$object;
+        $view = 'erreur';
+        $viewAfter = $afterView;
+        $tab_p = ModelProduit::selectAllDispo();
+        $typeErreur = $messageErreur;
+        $pagetitle = $titlepage;
+        require File::build_path(array("view","view.php"));
+    }
+
+}

@@ -119,31 +119,31 @@ class ControllerUtilisateur{
                 );
                 
 
-                if(!is_null(myGet("mdp")) && !is_null(myGet("new_mdp")) && !is_null(myGet("conf_mdp"))) {
-                    if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
-
-                        if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
-                            $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
                 
-                        } else {
-                            $controller = self::$object;
-                            $view = 'erreurMpdIdentique';
-                            $pagetitle = 'Modifier son compte';
-                            $action = 'updated';
-                            require File::build_path(array("view", "view.php"));
-                            return;
-                        }
+                if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
 
+                    if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
+                        $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
+            
                     } else {
                         $controller = self::$object;
-                        $view = 'erreurLoginMdp';
-                        $viewAfter = 'update';
+                        $view = 'erreurMpdIdentique';
                         $pagetitle = 'Modifier son compte';
                         $action = 'updated';
                         require File::build_path(array("view", "view.php"));
                         return;
                     }
-                } 
+
+                } else {
+                    $controller = self::$object;
+                    $view = 'erreurLoginMdp';
+                    $viewAfter = 'update';
+                    $pagetitle = 'Modifier son compte';
+                    $action = 'updated';
+                    require File::build_path(array("view", "view.php"));
+                    return;
+                }
+                
                     
                 if(Session::is_admin()){
                     $updateArray['admin'] = isset($_POST['admin']);
@@ -226,7 +226,7 @@ class ControllerUtilisateur{
                 }
             } else if ($u && $u->get('nonce') == NULL) { 
                 $typeErreur = "Votre compte a déjà été validé.";
-                ControllerSite::erreur('site', "Accueil", $typeErreur);
+                ControllerSite::erreur('accueil', "Accueil", $typeErreur);
                 return;
             } else if ($u && $u->get('nonce') != $_GET['nonce']){
                 $typeErreur = "Le lien n'est plus valide.";

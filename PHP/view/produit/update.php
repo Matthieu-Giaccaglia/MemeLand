@@ -1,3 +1,30 @@
+<?php
+
+    if ($action == 'created') {
+        $produit = new ModelProduit(array(
+            'id_produit' => "",
+            'nom' => "",
+            'description' => "",
+            'prix' => "",
+            'categorie_id' => "",
+            'couleur' => "",
+            'disponible' =>"",
+            'image' => ""
+        ));
+        
+        $required = true;  
+    } else if ($action == 'updated') {
+
+        $id_produit = myGet('id_produit');
+        if(!is_null($id_produit))
+            $produit = ModelProduit::select($id_produit);
+
+        $required = false;
+    }
+?>
+
+
+
 <section>
     <div>
         <form method="post" action="?controller=produit&action=<?php echo $action; ?>" enctype="multipart/form-data">

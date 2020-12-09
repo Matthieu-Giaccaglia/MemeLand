@@ -8,12 +8,12 @@
             } else {
                 echo "<table class='panier'>
                             <tr>
-                                <td>N° Produit</td>
-                                <td>Image</td>
-                                <td>Nom du produit</td>
-                                <td>Categorie</td>
-                                <td>Prix</td>
-                                <td>Disponible</td>
+                                <th>N° Produit</th>
+                                <th>Image</th>
+                                <th>Nom du produit</th>
+                                <th>Categorie</th>
+                                <th>Prix</th>
+                                <th>Disponible</th>
                             </tr>";
                 foreach ($tab_produit as $p) {
             
@@ -40,6 +40,7 @@
                                 </tr>";
    
                 }
+                echo "</table>";
             }
         ?>
     </main>
