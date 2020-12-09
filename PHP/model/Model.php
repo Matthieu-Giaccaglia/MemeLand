@@ -116,16 +116,12 @@ class Model {
 
             $set_string = join(',', $set_parts);
             $sql = "UPDATE $table_name SET $set_string WHERE $primary_key='$data[$primary_key]'";
-            echo $sql;
             
             // Préparation de la requête
             $req_prep = Model::$pdo->prepare($sql);
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
             $tab_results = $req_prep->fetchAll();
             // Attention, si il n'y a pas de résultats, on renvoie false
-            if (empty($tab_results))
-                return false;
-            return $tab_results[0];
 
             // On donne les valeurs et on exécute la requête	 
             return $req_prep->execute($data);

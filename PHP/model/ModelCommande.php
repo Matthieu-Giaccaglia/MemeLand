@@ -6,6 +6,7 @@ class ModelCommande extends Model {
     private $id_commande;
     private $utilisateur_login;
     private $date;
+    private $prix_total;
     
     protected static $object = 'commande';
     protected static $primary = 'id_commande';
@@ -31,6 +32,7 @@ class ModelCommande extends Model {
             $this->utilisateur_login = $data['utilisateur_login'];
             $this->id_commande = $data['id_commande'];
             $this->date = $data['date'];
+            $this->prix_total = $data['prix_total'];
         }
     }
 
@@ -42,9 +44,10 @@ class ModelCommande extends Model {
             $sql = "INSERT INTO p_commande (utilisateur_login, date, prix_total) VALUES ('$utilisateur_login', '$date', $prixTot);";
             foreach ($tab_produit as $cle => $value){
                 
-                $sql = $sql . "INSERT INTO p_liste_article(commande_id, produit_id, nb_produit) 
+                $sql = $sql . "INSERT INTO p_listeArticle(commande_id, produit_id, nb_produit) 
                                 VALUES (LAST_INSERT_ID(), $cle, $value);";
             }
+            echo $sql;
         
             $req_prep = Model::$pdo->prepare($sql);
             return $req_prep->execute();
@@ -71,11 +74,15 @@ class ModelCommande extends Model {
             $class_name = 'Model' . ucfirst(static::$object);
             $primary_key = static::$primary;
             $sql = "SELECT * from p_commande 
-                    WHERE utilisateur_login=$id_utilisateur";
+                    WHERE utilisateur_login=:tag_utilisateur";
+
+            $values = array(
+                "tag_utilisateur" => $id_utilisateur
+            );
             
             $req_prep = Model::$pdo->prepare($sql);
+            $req_prep->execute($values);
 
-            
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
             $tab_results = $req_prep->fetchAll();
             
@@ -96,16 +103,24 @@ class ModelCommande extends Model {
 
         try {
             
-            $sql = "SELECT id_produit, categorie_id, prix, nom, description, image,couleur FROM p_produit p
+            $sql = "SELECT id_produit, categorie_id, prix, nom, description, image,couleur 
+                    FROM p_produit p
                     JOIN p_liste_article l ON p.id_produit=l.produit_id
                     JOIN p_commande c ON l.commande_id=c.id_commande
-                    WHERE c.id_commande=$id_commande";
+                    WHERE c.id_commande=:tag_commande";
+
+            $values = array(
+                "tag_commande" => $id_commande
+            );
             
             $req_prep = Model::$pdo->prepare($sql);
+            $req_prep->execute($values);
 
             
             $req_prep->setFetchMode(PDO::FETCH_CLASS, 'ModelProduit');
             $tab_results = $req_prep->fetchAll();
+
+            var_dump($tab_results);
             
             if (empty($tab_results))
                 return false;

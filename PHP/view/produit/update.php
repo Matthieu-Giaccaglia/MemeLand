@@ -22,11 +22,14 @@
                 </p>
                 <p>
                     <label for="categorie_id">Categorie</label> :
-                    <select name="categorie_id" <?php if($required) echo 'required'; ?>>
-                        <option value="<?php echo $produit->get('categorie_id'); ?>" disabled selected>Catégorie</option>
-                        <option value="pull">Pull</option>
-                        <option value="pins">Pins</option>
+                    <select name="categorie_id" <?php if($required) echo 'required';?> >
+                        <option value="pull" <?php  if($produit->get('categorie_id')=='pull') echo "selected='selected'"; ?>>Pull</option>
+                        <option value="pins" <?php  if($produit->get('categorie_id')=='pins') echo "selected='selected'"; ?>>Pins</option>
                     </select> 
+                </p>
+                <p>
+                    <input type="checkbox" value="" name="disponible" id="disponible_id" <?php if($produit->get('disponible')) echo 'checked';?> >
+                    <label for="disponible_id">Disponible</label>
                 </p>
                 <p>
                     <label for="image_id">Upload une image :</label> :

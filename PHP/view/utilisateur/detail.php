@@ -19,6 +19,9 @@ echo <<< EOT
             <li>nom : $nomHTML</li>
             <li>prenom : $prenomHTML</li>
             <li>email : $emailHTML</li>
+            <li><a href='?controller=utilisateur&action=update&login=$loginURL'>Modifier</a></li>
+            <li><a href='?controller=utilisateur&action=delete&login=$loginURL'>Supprimer</a></li>
+        </ul>
     </p>
 </section>
 EOT;

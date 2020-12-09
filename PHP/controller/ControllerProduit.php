@@ -9,8 +9,7 @@ class ControllerProduit {
     protected static $object = 'produit';
 
     public static function readAll() {
-        $tab_p = ModelProduit::selectAll();     //appel au modèle pour gerer la BD
-
+        $tab_p = ModelProduit::selectAllDispo();     //appel au modèle pour gerer la BD
         $controller = 'produit';
         $view = "list";
         $pagetitle = "Tous les produits";
@@ -50,68 +49,62 @@ class ControllerProduit {
     }
 
     public static function create() {
-        $controller = 'produit';
-        $view = 'update';
-        $pagetitle = 'Créer un produit';
-        
-        $produit = new ModelProduit(array(
-            'id_produit' => "",
-            'nom' => "",
-            'description' => "",
-            'prix' => "",
-            'categorie_id' => "",
-            'couleur' => "",
-            'image' => ""
-        ));
-        
-        $action = "created";
-        $required = true;
+        if(Session::is_admin()){
+            $controller = 'produit';
+            $view = 'update';
+            $pagetitle = 'Créer un produit';
+            
+            $produit = new ModelProduit(array(
+                'id_produit' => "",
+                'nom' => "",
+                'description' => "",
+                'prix' => "",
+                'categorie_id' => "",
+                'couleur' => "",
+                'disponible' =>"",
+                'image' => ""
+            ));
+            
+            $action = "created";
+            $required = true;
+        }else{
+            $controller = 'produit';
+            $view = 'error';
+            $pagetitle = 'Simple Utilisateur';
+        }
         
         require File::build_path(array("view","view.php"));
     }
 
     public static function created() {
         $pagetitle = "Gestion des produits";
+        $controller = 'produit';
+        $view = 'created';
 
-        if (empty($_FILES['monFichier']) && !is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
-            return;
-        } else {
 
-            $nameOrigine = $_FILES['monFichier']['name'];
-            $elementChemin = pathinfo($nameOrigine);
-            $extensionFichier = $elementChemin['extension'];
-            $extensionAutorisée = array('jpeg', 'jpg', 'png');
+        $nameFile = self::nameUploadFile();
 
-            if(!(in_array($extensionFichier, $extensionAutorisée)))
-                echo 'Wrong extension';
+        if($nameFile) {
+            
+            $save = ModelProduit::save(array(
+                'nom' => $_POST['nom'],
+                'description' => $_POST['description'],
+                'prix' => $_POST['prix'],
+                'categorie_id' => $_POST['categorie_id'],
+                'couleur' => $_POST['couleur'],
+                'disponible' => isset($_POST['disponible']),
+                'image' => $nameFile
+            ));
 
-            else {
-
-                $repertoireDest = File::build_path(array('public','images','produit')) . "/";
-                $newName = Security::generateRandomHex() . "." . $extensionFichier;
-
-                if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
-                    echo "La copie a échoué";
-                } else {
-                
-                    $save = ModelProduit::save(array(
-                        'nom' => $_POST['nom'],
-                        'description' => $_POST['description'],
-                        'prix' => $_POST['prix'],
-                        'categorie_id' => $_POST['categorie_id'],
-                        'couleur' => $_POST['couleur'],
-                        'image' => $newName
-                    ));
-
-                    if ($save) {
-                        self::readAll();
-                    } else {
-                        $controller = 'produit';
-                        $view = 'errorProduit';
-                        $pagetitle = 'Erreur';
-                    }
-                }
+            if ($save) {
+                self::readAll();
+            } else {
+                //ERROR
+                $view = 'errorProduit';
+                $pagetitle = 'Erreur';
             }
+        } else {
+            //ERROR_UPLOAD
         }
         require File::build_path(array("view", "view.php"));
     }
@@ -169,49 +162,72 @@ class ControllerProduit {
     }
 
     public static function updated() {
-        require_once File::build_path(array("model","ModelProduit.php"));
 
-        if (empty($_FILES['monFichier']) && !is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
-            return;
-        } else {
+            
+            $updateArray = array(
+                'id_produit' => $_POST["id_produit"],
+                'nom' => $_POST['nom'],
+                'description' => $_POST['description'],
+                'prix' => $_POST['prix'],
+                'categorie_id' => $_POST['categorie_id'],
+                'disponible' => isset($_POST['disponible']),
+                'couleur' => $_POST['couleur']
+            );
 
-            $nameOrigine = $_FILES['monFichier']['name'];
-            $elementChemin = pathinfo($nameOrigine);
-            $extensionFichier = $elementChemin['extension'];
-            $extensionAutorisée = array('jpeg', 'jpg', 'png');
+            $nameFile = self::nameUploadFile();
 
-            if(!(in_array($extensionFichier, $extensionAutorisée)))
-                echo 'Wrong extension';
+            if($nameFile)
+                $updateArray['image'] = $nameFile;
 
-            else {
-
-                $repertoireDest = File::build_path(array('public','images','produit')) . "/";
-                $newName = Security::generateRandomHex() . "." . $extensionFichier;
-
-                if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
-                    echo "La copie a échoué";
-                } else {
+            ModelProduit::update($updateArray);
+            
+            $p = ModelProduit::select($_POST["id_produit"]); 
+            
+            $controller = 'produit';
+            $view = 'updated';
+            $pagetitle = 'Modification Effectuée';
         
-                    ModelProduit::update(array(
-                        'id_produit' => $_POST["id_produit"],
-                        'nom' => $_POST['nom'],
-                        'description' => $_POST['description'],
-                        'prix' => $_POST['prix'],
-                        'categorie_id' => $_POST['categorie_id'],
-                        'image' => $_POST['image'],
-                        'couleur' => $_POST['couleur']
-                    ));
-                    
-                    $p = ModelProduit::select($_POST["id_produit"]); 
-                    
-                    $controller = 'produit';
-                    $view = 'updated';
-                    $pagetitle = 'Modification Effectuée';
-                    
-                    require File::build_path(array("view","view.php"));
-                }
-            }
+            require File::build_path(array("view","view.php"));;
         } 
-    }
 
-}
+
+        private static function nameUploadFile(){
+
+            if (is_uploaded_file($_FILES['monFichier']['tmp_name'])) {
+
+                $nameOrigine = $_FILES['monFichier']['name'];
+                $elementChemin = pathinfo($nameOrigine);
+                $extensionFichier = $elementChemin['extension'];
+                $extensionAutorisée = array('jpeg', 'jpg', 'png');
+
+                if(!(in_array($extensionFichier, $extensionAutorisée)))
+                    echo 'Wrong extension';
+
+                else {
+
+                    $repertoireDest = File::build_path(array('public','images','produit')) . "/";
+                    $newName = Security::generateRandomHex() . "." . $extensionFichier;
+
+                    if (!move_uploaded_file($_FILES['monFichier']['tmp_name'], $repertoireDest.$newName)) {
+                        return false;
+                    } else {
+                        return $newName;
+                    }
+                }
+            } else {
+                return false;
+            } 
+        }
+
+        public static function erreurProduit() {
+
+            $controller = self::$object;
+            $view = 'erreurProduitExist';
+            $pagetitle = 'Tous nos articles';
+            $tab_p = ModelProduit::selectAllDispo();
+
+            require File::build_path(array("view","view.php"));
+        }
+    
+
+    }

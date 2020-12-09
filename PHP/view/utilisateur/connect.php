@@ -1,6 +1,6 @@
 <section>
     <div>
-        <form method="get" action="./index.php">
+        <form method="post" action="?controller=utilisateur&action=connected">
             <fieldset>
                 <legend>Connexion :</legend>
                 <p>
@@ -12,13 +12,11 @@
                     <label for="mdp_id">Mot de Passe</label> :
                     <input type="password" name="mdp" id="mdp"  required>
                 </p>
-                <input type='hidden' name='action' value='connected'>
-                <input type='hidden' name='controller' value='<?php echo $controller; ?>'>
                 <p>
                     <input class="b_input" type="submit" value="Envoyer" />
                 </p>
             </fieldset>
-            <a href="index.php?controller=<?php echo $controller; ?>&action=create"><h3>S'inscrire</h3></a>
+            <a href="index.php?controller=<?php echo $controller; ?>&action=create"><h3>Pas de compte ? S'inscrire</h3></a>
         </form>
     </div>
 </section>

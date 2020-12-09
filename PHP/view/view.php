@@ -53,13 +53,13 @@ EOT;
                 <?php 
                   if($_SESSION['connected']) {
                     echo "<a href='?controller=utilisateur&action=monCompte'>Mon compte</a>";
-                    echo "<a href='?controller=commande&action=mesCommades'>Mes commande</a>";
+                    echo "<a href='?controller=commande&action=mesCommandes'>Mes commandes</a>";
                   }else{ 
                     echo "<a href='index.php?controller=utilisateur&action=create'>Inscription</a>";
                   }
 
                   if (Session::is_admin()) {
-                    echo "<a href='?controller=produit&action=create'>Créer un produit</a>";
+                    echo "<a href='?controller=admin&action=readAllProduct'>Panel Admin</a>";
                   }
 
                 ?>

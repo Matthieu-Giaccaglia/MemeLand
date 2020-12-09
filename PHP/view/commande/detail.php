@@ -1,51 +1,60 @@
+<section>
+    <h3>Détail de ma commande :</h3>
+    <main id="main_panier">
+      <table class='panier'>
 <?php
-if(!isset($c)){
-    $c = ModelCommande::select($_GET['id_commande']);
+
+  echo "
+    <tr>
+        <td>COMMANDE N° : " . $c->get('id_commande') . "</td>
+        <td>FAIT LE :" . $c->get('date') . "</td>
+        <td></td>
+        <td></td>
+        <td>" . $c->get('prix_total') . "</td>
+    </tr>";
+
+foreach($tab_listProduit as $key) {
+
+    $quantite = $key->get('nb_produit');
+    $produit = ModelProduit::select($key->get('produit_id'));
+
+
+    $id_produit = $produit->get('id_produit');
+    $image = $produit->get("image");
+    $nom = htmlspecialchars($produit->get('nom'));
+    $categorie = htmlspecialchars($produit->get("categorie_id"));
+    $prix = $produit->get("prix") * $quantite;
+    
+
+    echo "
+    <tr>
+        <td>
+            <a href='?controller=produit&action=read&id_produit=$id_produit'>
+                <img src='./public/images/produit/$image' alt='produit_image' height='50px'>
+            </a>
+        </td>
+        <td>$nom</td>
+        <td>$categorie</td>
+        <td>$quantite </td>
+        <td>$prix <strong>€</strong></td>
+    </tr>";
 }
-//require_once File::build_path(array('produit', 'detail.php'));
-
-$idCommandeHTML = htmlspecialchars($c->get("commande_id"));
-$produitHTML = htmlspecialchars($c->get("produit_id"));
-$nbproduitHTML = htmlspecialchars($c->get("nb_produit"));
-
-$vidProduitURL = rawurlencode($c->get("id_produit"));
-$image = $c->get("image");
-$nom = $c->get("nom");
-$categorie = $c->get("categorie_id");
-$prix = $c->get("prix");
-
-echo <<< EOT
-    <section>
-        <p> 
-            Détail de la commande $idCommandeHTML : 
-            <ul>
-                <li><a href="?controller=produit&action=read&id_produit=$vidProduitURL"><img src="./public/images/produit/$image" alt="produit_image" class="perso">
-                <table>
-                  <tr>
-                    <td>$nom</td>
-                    <td>$categorie</td>
-                    <td>$prix <strong>€</strong></td>
-                  </tr>
-                </table>  
-              </a></li>
-            </ul>
-EOT;
 
 if(Session::is_admin()) {
-echo <<< EOT
-            <a href="?controller=commande&action=update&id_commande=$idcommandeURL">
-                Mettre à jour
-            </a>
-EOT;
+echo "
+    <td>
+      <a href='?controller=commande&action=delete&id_commande=" . $c->get('id_commande') . "'>
+        Supprimer
+      </a>
+    </td>
+    <td>
+      <a href='?controller=commande&action=update&id_commande=" . $c->get('id_commande') . "'>
+        Mettre à jour
+      </a>
+    </td>
+";
 }
 ?>
-    <div class="button">
-    <form method="get" action="">
-        <input type="hidden" name="action" value="ajoutPanier">
-        <input type="hidden" name="controller" value="utilisateur">
-        <input type="hidden" name="id_commande" value="<?php echo $idcommandeURL;?>">
-        <input class="b_input" type="submit" value="Ajouter au panier" />
-    </form>
-    </div>
-    </p>
+    </table>
+  </main>
 </section>
