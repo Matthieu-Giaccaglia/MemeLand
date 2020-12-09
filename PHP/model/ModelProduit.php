@@ -50,17 +50,14 @@ class ModelProduit extends Model {
             $table_name = "p_" . static::$object;
             $class_name = 'Model' . ucfirst(static::$object);
 
-            $sql = "SELECT * from $table_name 
-                    WHERE categorie_id=:tag_categorie
+            $sql = "SELECT id_produit, categorie_id, prix, nom, description, image, couleur, disponible 
+                    FROM p_produit p
+                    JOIN p_categorie c ON p.categorie_id = c.id_categorie 
+                    WHERE categorie_id= '$categorie_id'
                     AND disponible=true";
 
-            $values = array(
-                'tag_categorie' => $categorie_id
-            );
-            
-
             $req_prep = Model::$pdo->query($sql);
-            $req_prep->execute($values);
+            $req_prep->execute();
 
             $req_prep->setFetchMode(PDO::FETCH_CLASS, $class_name);
             return $req_prep->fetchAll();

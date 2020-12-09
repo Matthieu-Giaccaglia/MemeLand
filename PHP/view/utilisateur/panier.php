@@ -12,10 +12,10 @@
                 foreach ($tab_panier as $key => $value) {
                     $p = ModelProduit::select($key);
             
-                    $vidProduitURL = rawurlencode($p->get("id_produit"));
+                    $id_produitURL = rawurldecode($p->get("id_produit"));
                     $image = $p->get("image");
-                    $nom = $p->get("nom");
-                    $categorie = $p->get("categorie_id");
+                    $nomHTML = htmlspecialchars($p->get("nom"));
+                    $categorieHTML = htmlspecialchars($p->get("categorie_id"));
                     $prix = $p->get("prix")*$value;
                     
                     $prixTot = $prixTot + $prix;
@@ -23,12 +23,12 @@
                     echo "
                                 <tr>
                                     <td>
-                                        <a href='?controller=produit&action=read&id_produit=$vidProduitURL'>
+                                        <a href='?controller=produit&action=read&id_produit=$id_produitURL'>
                                             <img src='./public/images/produit/$image' alt='produit_image' height='50px'>
                                         </a>
                                     </td>
-                                    <td>$nom</td>
-                                    <td>$categorie</td>
+                                    <td>$nomHTML</td>
+                                    <td>$categorieHTML</td>
                                     <td>$prix <strong>€</strong></td>
                                     <td>
                                         <form method='get' action=''>

@@ -41,7 +41,7 @@
                 </p>
                 <p>
                     <label for="prix_id">Prix</label> :
-                    <input type="text" value="<?php echo $produit->get('prix'); ?>" name="prix" id="prix_id"  required='true'>
+                    <input type="number" value="<?php echo $produit->get('prix'); ?>" name="prix" id="prix_id"  required='true'>
                 </p>
                 <p>
                     <label for="couleur_id">Couleur</label> :
@@ -50,6 +50,8 @@
                 <p>
                     <label for="categorie_id">Categorie</label> :
                     <select name="categorie_id" <?php if($required) echo 'required';?> >
+                        <option value="chaussure" <?php  if($produit->get('categorie_id')=='chaussure') echo "selected='selected'"; ?>>Chaussure</option>
+                        <option value="shirt" <?php  if($produit->get('categorie_id')=='shirt') echo "selected='selected'"; ?>>Shirt</option>
                         <option value="pull" <?php  if($produit->get('categorie_id')=='pull') echo "selected='selected'"; ?>>Pull</option>
                         <option value="pins" <?php  if($produit->get('categorie_id')=='pins') echo "selected='selected'"; ?>>Pins</option>
                     </select> 

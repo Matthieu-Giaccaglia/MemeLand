@@ -39,7 +39,6 @@ class ModelCommande extends Model {
     
     public static function saveCommande($utilisateur_login, $date,$prixTot, $tab_produit) {
         try {
-            echo '------------------------------------------------';
 
             $sql = "INSERT INTO p_commande (utilisateur_login, date, prix_total) VALUES (:tag_login, :tag_date, :tag_prix_tot);";
             foreach ($tab_produit as $cle => $value){
@@ -47,7 +46,7 @@ class ModelCommande extends Model {
                 $sql = $sql . "INSERT INTO p_listeArticle(commande_id, produit_id, nb_produit) 
                                 VALUES (LAST_INSERT_ID(), $cle, $value);";
             }
-            echo $sql;
+            
 
             $values = array(
                 'tag_login' => $utilisateur_login,

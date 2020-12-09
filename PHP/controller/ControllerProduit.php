@@ -29,7 +29,7 @@ class ControllerProduit {
                 require File::build_path(array("view", "view.php"));
                 return;
             } else {
-                $erreurType = 'Catégorie non existante';
+                $erreurType = 'Catégorie non existante / vide';
                 self::erreur('list', 'Tous nos produits', $erreurType);
                 return; 
             }
@@ -99,7 +99,8 @@ class ControllerProduit {
                     if ($save) {
                         $tab_p = ModelProduit::selectAll();
                         $controller = 'admin';
-                        $view = "created";
+                        $view = "panelAdmin";
+                        $viewAdmin = "listAllProduct";
                         $pagetitle = "Produit crée";
                         require File::build_path(array('view', 'view.php'));
                         return;
@@ -136,6 +137,24 @@ class ControllerProduit {
         }
     }
 
+    public static function deleteConf() {
+        if(Session::is_admin()) {
+            if (!is_null(myGet('id_produit'))) {
+                $controller= self::$object;
+                $view= 'deleteConf';
+                $pagetitle='Confirmation Suppression';
+                require File::build_path(array("view", "view.php"));
+                return;
+            } else {
+                $typeErreur = 'Aucun produit sélectionnée.';
+                ControllerAdmin::erreur('listAllProduct', 'Admin: Tous les produits', $typeErreur);
+                return; 
+            }
+        } else {
+            ControllerSite::accueil();
+        }
+    }
+
     public static function delete() {
         if(Session::is_admin()){
 
@@ -149,7 +168,7 @@ class ControllerProduit {
                 
                 if ($delete_successful) {
                     $tab_p = ModelProduit::selectAll();
-                    $controller = 'admin';
+                    $controller = 'produit';
                     $view = "deleted";
                     $pagetitle = "Produit supprimée";
                     require File::build_path(array("view","view.php"));

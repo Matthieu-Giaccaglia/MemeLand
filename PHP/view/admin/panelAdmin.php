@@ -12,11 +12,11 @@
               <div class='menu_s'>
                 <a href='?controller=utilisateur&action=create'><div class='smenu_s' onclick='location.href='?=utilisateur&action=create';'><h1>Créer un utilisateur</a>
                 </div>
-                <a href='?controller=produit&action=readAllProduct'><div class='smenu_s' onclick='location.href='?=produit&action=create';'><h1>Créer un produit</a></h1>
+                <a href='?controller=produit&action=create'><div class='smenu_s' onclick='location.href='?=produit&action=create';'><h1>Créer un produit</a></h1>
                 </div><!--animation pour hover, agrandit la taille de la boite et rapetissit les autres-->
               </div>
           </aside>";
 
-    $filepath = File::build_path(array("view", static::$object, "$viewAdmin.php"));
+    $filepath = File::build_path(array("view", 'admin', "$viewAdmin.php"));
     require $filepath;
 ?>

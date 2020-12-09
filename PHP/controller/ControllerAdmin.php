@@ -10,8 +10,6 @@ class ControllerAdmin{
 
     public static function readAllProduct() {
 
-        $tab_produit = ModelProduit::selectAll();
-
         $controller = self::$object;
         $pagetitle = "Admin: Tous les produits";
         $view = "panelAdmin";
@@ -22,8 +20,6 @@ class ControllerAdmin{
     }
 
     public static function readAllUser() {
-
-        $tab_user = ModelUtilisateur::selectAll();
 
         $controller = self::$object;
         $pagetitle = "Admin: Tous les users";
@@ -59,12 +55,7 @@ class ControllerAdmin{
     }
 
     public static function erreur($afterView,$titlepage,$messageErreur) {
-        if($afterView == 'listAllUser')
-            $tab_user = ModelUtilisateur::selectAll();
-
-        else if ($afterView == 'listAllProduct')
-            $tab_produit = ModelProduit::selectAll();
-
+        
         $controller = self::$object;
         $view = 'erreur';
         $viewAfter = $afterView;

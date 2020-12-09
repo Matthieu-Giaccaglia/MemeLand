@@ -9,17 +9,16 @@ class ControllerCommande {
     protected static $object = "commande";
 
     public static function mesCommandes() {
-
-        echo 'MESCOMMANDES';
         if (Session::is_connected()) {
 
             $tab_c = ModelCommande::readCommande($_SESSION['login']);
             $controller = self::$object;
             $view = 'list';
             $pagetitle = 'Mes Commandes';
-            var_dump($tab_c);
         } else {
-            echo 'PAS Connecté';
+            $controller = 'site';
+            $view = 'accueil';
+            $pagetitle = 'Accueil';
         }
 
         require File::build_path(array("view","view.php"));
@@ -32,62 +31,81 @@ class ControllerCommande {
             $controller = self::$object;
             
             $c = ModelCommande::select($_GET['id_commande']);
+
+            if(!$c){
+                $typeErreur = "La Commande n'existe pas";
+                ControllerCommande::erreur('list', 'Liste Commandes', $typeErreur);
+                return;
+            } 
+
             $tab_listProduit = ModelListeArticle::selectAllProduit($_GET['id_commande']);
 
-            var_dump($tab_listProduit);
-
             if(!$tab_listProduit){
-                echo "PAS PRODUIT DANS COMMANDE";
+                $typeErreur = "Get Liste Produit de la Commande";
+                ControllerCommande::erreur('list', 'Liste Commandes', $typeErreur);
+                return;
             } else {
                 $view = 'detail';
                 $pagetitle = 'Détail de ma Commande';
-                require File::build_path(array("view","view.php"));
             }
             
         } else {
-            echo Session::is_connected();
-            echo Session::is_user($_GET['login']);
-            echo "PAS CONNECTE";
-        }   
+            $controller = 'site';
+            $view = 'accueil';
+            $pagetitle = 'Accueil';
+        }
+        require File::build_path(array("view","view.php"));   
     }
 
     public static function delete() {
-        $view = "deleted";
-        $pagetitle = "Delete Commande";
-        $controller = self::$object;
-        
-        $delete_successful = ModelCommande::delete($_GET['id_commande']);
-        
-        if (!$delete_successful) {
-            $view = "error";
+        if(Session::is_connected() && Session::is_user($_GET['login'])) {
+            $view = "deleted";
+            $pagetitle = "Delete Commande";
+            $controller = self::$object;
+            
+            $delete_successful = ModelCommande::delete($_GET['id_commande']);
+            
+            if (!$delete_successful) {
+                $typeErreur = "La commmande n'as pas été trouvé pour delete";
+                ControllerCommande::erreur('list', 'Liste Commandes', $typeErreur);
+                return;
+            }
+        } else {
+            $controller = 'site';
+            $view = 'accueil';
+            $pagetitle = 'Accueil';
         }
         
         require File::build_path(array("view", "view.php"));
     }
 
     public static function update() {
-        $commande = ModelCommande::select($_GET['id_commande']);
-        $controller = self::$object;
+        if(Session::is_connected() && Session::is_user($_GET['login'])) {
+            $commande = ModelCommande::select($_GET['id_commande']);
+            $controller = self::$object;
 
-        if ($commande) {
-            $view = 'update';
-            $pagetitle = 'Modifier une commande';
-            
-            $action = "updated";
-            $required = false;
-        
-            require File::build_path(array("view","view.php"));
+            if ($commande) {
+                $view = 'update';
+                $pagetitle = 'Modifier une commande';
+                
+                $action = "updated";
+                $required = false;
+            } else {
+                $typeErreur = "La commande n'existe pas";
+                ControllerCommande::erreur('list', 'Liste Commandes', $typeErreur);
+                return;
+            }
         } else {
-            $view = 'error';
-            $pagetitle = 'Erreur de Update';
-
-            require File::build_path(array("view","view.php"));
-            die();
+            $controller = 'site';
+            $view = 'accueil';
+            $pagetitle = 'Accueil';
         }
+        
+        require File::build_path(array("view", "view.php"));
     }
 
     public static function updated() {
-
+        if(Session::is_connected() && Session::is_user($_GET['login'])) {
             
             $updateArray = array(
                 'id_commande' => $_GET['id_commande'],
@@ -102,9 +120,25 @@ class ControllerCommande {
             $view = 'updated';
             $pagetitle = 'Modification Effectuée';
         
-            require File::build_path(array("view","view.php"));;
+        } else {
+            $controller = 'site';
+            $view = 'accueil';
+            $pagetitle = 'Accueil';
+        }
+        
+        require File::build_path(array("view", "view.php"));
+        
         } 
 
+    public static function erreur($afterView,$titlepage,$messageErreur) {
+        $controller = self::$object;
+        $view = 'erreur';
+        $viewAfter = $afterView;
+        $typeErreur = $messageErreur;
+        $pagetitle = $titlepage;
+        
+        require File::build_path(array("view","view.php"));
+    }
 
 }
 

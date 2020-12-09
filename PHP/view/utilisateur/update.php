@@ -7,21 +7,10 @@
         $createOrUpdate = 'Créer';
         $loginReadOrReq = 'required';
 
-        $user = new ModelUtilisateur(array(
-            'login' => "",
-            'nom' => "",
-            'prenom' => "",
-            'email' => "",
-            'nonce' => "",
-            'mdp' => ""
-        ));
+        
       
     } else if($action == 'updated') {
-        if(isset($_GET['login']))
-            $user = ModelUtilisateur::select($_GET['login']);
-        else if (isset($_POST['login']))
-            $user = ModelUtilisateur::select($_POST['login']);
-
+        
         $loginReadOrReq = 'readonly';
         $reqMdp = "";
         $old = "Ancien";
@@ -68,7 +57,7 @@
                 }
                 ?>
                 <p>
-                    <label for="conf_mdp_id">Confirmation Mot de Passe :</label> :
+                    <label for="conf_mdp_id">Confirmation Mot de Passe :</label>
                     <input type="password" value="" name="conf_mdp" id="conf_mdp_id" <?php echo $reqMdp ?>>
                 </p>
                 <?php

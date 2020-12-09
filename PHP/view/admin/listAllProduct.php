@@ -2,7 +2,7 @@
     <h3>Liste des produits :</h3>
     <main id="main_panier">
         <?php
-
+            $tab_produit = ModelProduit::selectAll();
             if(sizeof($tab_produit)==0){
                 echo "Aucun Article";
             } else {

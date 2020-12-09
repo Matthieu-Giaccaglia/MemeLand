@@ -19,7 +19,7 @@ foreach($tab_listProduit as $key) {
     $produit = ModelProduit::select($key->get('produit_id'));
 
 
-    $id_produit = $produit->get('id_produit');
+    $id_produitURL = rawurldecode($produit->get('id_produit'));
     $image = $produit->get("image");
     $nom = htmlspecialchars($produit->get('nom'));
     $categorie = htmlspecialchars($produit->get("categorie_id"));
@@ -29,7 +29,7 @@ foreach($tab_listProduit as $key) {
     echo "
     <tr>
         <td>
-            <a href='?controller=produit&action=read&id_produit=$id_produit'>
+            <a href='?controller=produit&action=read&id_produit=$id_produitURL'>
                 <img src='./public/images/produit/$image' alt='produit_image' height='50px'>
             </a>
         </td>

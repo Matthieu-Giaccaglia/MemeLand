@@ -2,7 +2,7 @@
     <h3>Liste des utilisateur :</h3>
     <main id="main_panier">
         <?php
-
+            $tab_user = ModelUtilisateur::selectAll();
             if(sizeof($tab_user)==0){
                 echo "Aucun Utilisateur! Même vous ! Bizarre...";
             } else {
@@ -18,21 +18,21 @@
                             </tr>";
                 foreach ($tab_user as $u) {
             
-                    $nom = htmlspecialchars($u->get("nom"));
-                    $prenom = htmlspecialchars($u->get("prenom"));
+                    $nomHTML = htmlspecialchars($u->get("nom"));
+                    $prenomHTML = htmlspecialchars($u->get("prenom"));
                     $loginHTML = htmlspecialchars($u->get("login"));
                     $loginRaw = rawurlencode($u->get("login"));
-                    $email = htmlspecialchars($u->get("email"));
+                    $emailHTML = htmlspecialchars($u->get("email"));
                      
                     if($u->get("admin")) $admin='OUI';
                     else $admin='non';
                            
                     echo "
                                 <tr>
-                                    <td>$nom</td>
-                                    <td>$prenom</td>
+                                    <td>$nomHTML</td>
+                                    <td>$prenomHTML</td>
                                     <td><a href='?controller=utilisateur&action=update&login=$loginRaw'>$loginHTML</a></td>
-                                    <td>$email</td>
+                                    <td>$emailHTML</td>
                                     <td>$admin</td>
                                     ";
                     

@@ -21,6 +21,15 @@ class ControllerUtilisateur{
             $view = 'update';
             $pagetitle = 'Créer un Utilisateur';
 
+            $user = new ModelUtilisateur(array(
+                'login' => "",
+                'nom' => "",
+                'prenom' => "",
+                'email' => "",
+                'nonce' => "",
+                'mdp' => ""
+            ));
+
             require File::build_path(array("view","view.php"));
             return;
         } else {
@@ -48,33 +57,58 @@ class ControllerUtilisateur{
                     'mdp' => Security::hacher($_POST['mdp'])
                 ));
 
-
-                $mail = "Bonjour" . $_POST['prenom'] . ",\n
+                $mail = "Bonjour " . $_POST['prenom'] . ",\n
 
                         Pour valider votre mail, veillez cliquer sur le lien ci-dessous :\n
-                        https://webinfo.iutmontp.univ-montp2.fr/~deneuvillew/PHP/projet-php/PHP/index.php?controller=utilisateur&action=validate&login=" . $_POST['login'] . "&nonce=" . $nonce ."\n
+                        https://webinfo.iutmontp.univ-montp2.fr/~deneuvillew/PHP/projet-php/PHP/index.php?controller=utilisateur&action=validate&login=" . rawurlencode($_POST['login']) . "&nonce=" . $nonce ."\n
                         \n
                         Cordialement,\n
                         L'Équipe Meme Land";
-                mail('walter@yopmail.com', $_POST['prenom'] . " Validation Mail 'Meme Land'", $mail);
+                mail('walter@yopmail.com', htmlspecialchars($_POST['prenom']) . ": Validation - 'Meme Land'", $mail);
 
                 if ($save_succesful) {
-                    $controller = self::$object;
-                    $view = "valideMail";
-                    $pagetitle = 'Connexion';
-                    require File::build_path(array("view", "view.php"));
-                    return;
-
+                    if (!Session::is_admin()) {
+                        $controller = self::$object;
+                        $view = "valideMail";
+                        $pagetitle = 'Connexion';
+                        require File::build_path(array("view", "view.php"));
+                        return;
+                    } 
                 } else {
-                    $typeErreur = "Nous sommes désolé, votre compte n'a pas pu être créé. Veillez contacter un administateur du site.";
-                    ControllerSite::erreur('equipe', "L'Équipe", $typeErreur);
+                    $controller = self::$object;
+                    $view = 'erreurLogin';
+                    $pagetitle = 'Modifier son compte';
+                    $action = 'created';
+
+                    $user = new ModelUtilisateur(array(
+                        'login' => $_POST['login'],
+                        'nom' => $_POST['nom'],
+                        'prenom' => $_POST['prenom'],
+                        'email' => $_POST['email'],
+                        'admin' => isset($_POST['admin']),
+                        'nonce' => $nonce,
+                        'mdp' => Security::hacher($_POST['mdp'])
+                    ));
+
+                    require File::build_path(array("view", "view.php"));
                     return;
                 }
             } else {
                 $controller = self::$object;
                 $view = 'erreurMdpIdentique';
-                $pagetitle = 'Modifier son compte';
+                $pagetitle = 'Mdp Pas Identique';
                 $action = 'created';
+
+                $user = new ModelUtilisateur(array(
+                    'login' => $_POST['login'],
+                    'nom' => $_POST['nom'],
+                    'prenom' => $_POST['prenom'],
+                    'email' => $_POST['email'],
+                    'admin' => isset($_POST['admin']),
+                    'nonce' => $nonce,
+                    'mdp' => Security::hacher($_POST['mdp'])
+                ));
+                
                 require File::build_path(array("view", "view.php"));
                 return;
             }
@@ -93,6 +127,7 @@ class ControllerUtilisateur{
                 $view = 'update';
                 $pagetitle = 'Modifier un Utilisateur';
                 $action='updated';
+                $user = ModelUtilisateur::select($_GET['login']);
                 require File::build_path(array("view","view.php"));
                 return;
             } else {
@@ -115,33 +150,34 @@ class ControllerUtilisateur{
                     'login' => $_POST['login'],
                     'nom' => $_POST['nom'],
                     'prenom' => $_POST['prenom'],
-                    'email' => $_POST['email'],
+                    'email' => $_POST['email']
                 );
                 
 
-                
-                if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
+                if (!empty($_POST['new_mdp'])) {
+                    if(ModelUtilisateur::checkPassword($_POST['login'],Security::hacher($_POST['mdp']))) {
 
-                    if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
-                        $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
-            
+                        if ($_POST["new_mdp"] == $_POST["conf_mdp"]) {
+                            $updateArray['mdp'] = Security::hacher($_POST['new_mdp']);
+                
+                        } else {
+                            $controller = self::$object;
+                            $view = 'erreurMpdIdentique';
+                            $pagetitle = 'Modifier son compte';
+                            $action = 'updated';
+                            require File::build_path(array("view", "view.php"));
+                            return;
+                        }
+
                     } else {
                         $controller = self::$object;
-                        $view = 'erreurMpdIdentique';
+                        $view = 'erreurLoginMdp';
+                        $viewAfter = 'update';
                         $pagetitle = 'Modifier son compte';
                         $action = 'updated';
                         require File::build_path(array("view", "view.php"));
                         return;
                     }
-
-                } else {
-                    $controller = self::$object;
-                    $view = 'erreurLoginMdp';
-                    $viewAfter = 'update';
-                    $pagetitle = 'Modifier son compte';
-                    $action = 'updated';
-                    require File::build_path(array("view", "view.php"));
-                    return;
                 }
                 
                     
@@ -152,12 +188,20 @@ class ControllerUtilisateur{
                 $update_succesful = ModelUtilisateur::update($updateArray);
             
                 if ($update_succesful) {
+
+                    if(Session::is_user($_POST['login'])) {
+                        $_SESSION['nom'] = $_POST['nom'];
+                        $_SESSION['prenom'] = $_POST['prenom'];
+                        
+                    }
+
                     $u = ModelUtilisateur::select($_POST['login']); 
                     
                     $controller = self::$object;
                     $view = 'updated';
                     $pagetitle = 'Modification Effectuée';
                     require File::build_path(array("view", "view.php"));
+                    //self::monCompte();
                     return;
 
                 } else {
