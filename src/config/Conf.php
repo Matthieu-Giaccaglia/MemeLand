@@ -4,18 +4,11 @@ class Conf {
   static private $debug = true;
 
   static private $databases = array(
-    // Le nom d'hote est infolimon a l'IUT
-    // ou localhost sur votre machine
-    'hostname' => 'webinfo.iutmontp.univ-montp2.fr',
-    // A l'IUT, vous avez une BDD nommee comme votre login
-    // Sur votre machine, vous devrez creer une BDD
-    'database' => 'deneuvillew',
-    // A l'IUT, c'est votre login
-    // Sur votre machine, vous avez surement un compte 'root'
-    'login' => 'deneuvillew',
-    // A l'IUT, c'est votre mdp (INE par defaut)
-    // Sur votre machine, vous avez creez ce mdp a l'installation
-    'password' => 'Denvers01'
+
+    'hostname' => 'localhost',
+    'database' => 'memeland',
+    'login' => 'root',
+    'password' => 'root'
   );
 
   static public function getLogin() {
